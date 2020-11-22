@@ -1,3 +1,15 @@
+/*
+    Titulo: DDSI Seminario 2
+    Fecha: Noviembre 2020
+    Autores:    Gomez Morales, Eladia
+                Lugli, Valentino Glauco
+                Maldonado Correa, José
+                Moyano Romero, Amanda
+                Muela Cárdenas, Jesús
+    Descripción: Pequeño SI que se conecta a una base de datos para realizar operaciones.
+*/
+
+// Librerias
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -7,10 +19,15 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.lang.*;
 
-public class ejemplo {
+// Clase base
+public class entregas
+{
 
-    public static void main(String[] args) {
+// Función Main
+    public static void main (String[] args)
+    {
 
+        // ESTO ES TEMPORAL, SUJETO A CAMBIAR. ESTA COMO PRUEBA QUE LA CONEXIO A LA BD SE PUEDE REALIZAR
         ArrayList<String> list = new ArrayList<String>();
 
         try 
@@ -52,7 +69,5 @@ public class ejemplo {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }
- 
