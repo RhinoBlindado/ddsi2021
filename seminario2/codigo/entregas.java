@@ -21,36 +21,111 @@ import java.lang.*;
 public class entregas
 {
 
+    public static void crearTabla()
+    {
+        // 
+    }
+
+
 // Función Main
     public static void main (String[] args)
     {
+        boolean running = true;
+        Scanner scan = new Scanner(System.in);
+        int selection;
 
-        // ESTO ES TEMPORAL, SUJETO A CAMBIAR. ESTA COMO PRUEBA QUE LA CONEXIO A LA BD SE PUEDE REALIZAR
-        ArrayList<String> list = new ArrayList<String>();
+        // Conexión a la BD
+        System.out.println("---CONEXIÓN A BASE DE DATOS---");
+        String user, pass;
+        
+        System.out.println(">USUARIO: ");
+        user = scan.next();
 
+        System.out.println(">CONTRASEÑA: ");
+        pass = scan.next();
+
+
+        Connection conn = null;
         try 
         {
-            File myObj = new File("credenciales.txt");
-            Scanner myReader = new Scanner(myObj);
-            while (myReader.hasNextLine()) 
+            conn = DriverManager.getConnection("jdbc:oracle:thin:@//oracle0.ugr.es:1521/practbd.oracle0.ugr.es", user, pass);
+        
+            if (conn != null) 
             {
-              list.add(myReader.nextLine());
-            }
-            myReader.close();
+                System.out.println(">CONEXION BASE DE DATOS: ABIERTA");
 
-            if (list.isEmpty())
+            } else 
             {
-                throw new SecurityException("PROVEER CREDENCIALES DE LA BD EN FICHERO 'credenciales.txt'");
+                System.out.println(">CONEXION BASE DE DATOS: ERROR");
             }
-        } 
-        catch (FileNotFoundException e) 
+
+            boolean tablasExisten = false;
+
+/*          PreparedStatement sql = null;
+            sql = conn.prepareStatement("SELECT table_name FROM user_tables where table_name='Stock'");
+
+            ResultSet whatever;
+            whatever = sql.executeQuery();
+            System.out.println("STOCK:" + whatever.getString(1));
+
+            sql = conn.prepareStatement("SELECT table_name FROM user_tables where table_name='TEST1'");
+            whatever = sql.executeQuery();
+            System.out.println("TEST: " + whatever.getString(1));
+*/
+
+            DatabaseMetaData dbm = conn.getMetaData();
+            ResultSet tables = dbm.getTables(null, null, "Stock", null);
+            if (tables.next()) {
+            System.out.println("Existe");
+            }
+            else {
+                System.out.println("no Existe");
+
+            }
+
+            // Menu principal
+            while(running)
+            {
+                System.out.println("---SISTEMA GUAPO DE INFORMACION---  \n"+
+                                    "Menú:                              \n"+ 
+                                    "1- Test                            \n"+
+                                    "0- Salir");
+
+                selection = scan.nextInt();
+
+                switch(selection)
+                {
+                    case 1:
+                        crearTabla();
+                    break;
+        
+                    case 2:
+                        System.out.println("2");
+
+                    break;
+
+                    case 3:
+                        System.out.println("3");
+                    break;
+
+                    case 0:
+                        running = false;
+                        conn.close();
+                        System.out.println(">CONEXION BASE DE DATOS: CERRADA");
+                    break; 
+                }
+            }
+            
+        } catch (SQLException e) 
         {
-            System.out.println("An error occurred.");
+            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+        } catch (Exception e) 
+        {
             e.printStackTrace();
         }
 
 
-       try (Connection conn = DriverManager.getConnection(
+     /*   try (Connection conn = DriverManager.getConnection(
                 "jdbc:oracle:thin:@//oracle0.ugr.es:1521/practbd.oracle0.ugr.es", list.get(0), list.get(1))) {
 
             if (conn != null) {
@@ -70,6 +145,7 @@ public class entregas
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
+
     }
 }
