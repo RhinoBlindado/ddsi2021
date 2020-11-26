@@ -10,9 +10,7 @@
 */
 
 // Librerias
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.io.File;  
 import java.io.FileNotFoundException;  
 import java.util.Scanner;
@@ -58,6 +56,10 @@ public class entregas
             if (conn != null) {
                 System.out.println("Connected to the database!");
 
+                PreparedStatement st = null;
+
+                st = conn.prepareStatement("CREATE TABLE test1(hola INTEGER)");
+                st.executeUpdate();
                 conn.close();
 
             } else {
