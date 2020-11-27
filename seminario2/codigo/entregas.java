@@ -20,27 +20,29 @@ import java.lang.*;
 // Clase base
 public class entregas {
 
-    public static void existenTablas(Connection conn, boolean &existe, String tabla){    
-      
+    public static boolean existeTabla(Connection conn, String tabla) throws SQLException {
+
+        boolean existe = false;
         DatabaseMetaData dbm = conn.getMetaData();
         ResultSet tables = dbm.getTables(null, null, tabla, null);
         if (tables.next()) {
-            System.out.println("Existe Stock");
+            System.out.println("Existe " + tabla);
             existe = true;
         } else {
-            System.out.println("no Existe Stock");
+            System.out.println("no Existe " + tabla);
             existe = false;
         }
         tables.close();
+        return existe;
     }
 
-    public static void borrarTabla(Connection conn, String tabla) {
+    public static void borrarTabla(Connection conn, String tabla) throws SQLException {
         PreparedStatement st = null;
         st = conn.prepareStatement("DROP TABLE " + tabla);
         st.executeUpdate();
     }
 
-    public static void crearTablas(Connection conn) {
+    public static void crearTablas(Connection conn) throws SQLException {
         PreparedStatement st = null;
         st = conn.prepareStatement("CREATE TABLE Stock(CProducto INTEGER PRIMARY KEY, Cantidad INTEGER)");
         st.executeUpdate();
@@ -101,7 +103,9 @@ public class entregas {
             boolean existeDetallePedido = false;
 
             // Comprueba que las tablas estén creadas
-            existeTabla(conn, existeStock, existePedido, existeDetallePedido);
+            existeStock = existeTabla(conn, "Stock");
+            existePedido = existeTabla(conn, "Pedido");
+            existeDetallePedido = existeTabla(conn, "DetallePedido");
 
             // Menu principal
             while (running) {
