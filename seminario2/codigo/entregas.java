@@ -25,6 +25,7 @@ public class entregas {
         boolean existe = false;
         DatabaseMetaData dbm = conn.getMetaData();
         ResultSet tables = dbm.getTables(null, null, tabla, null);
+
         if (tables.next()) {
             System.out.println("Existe " + tabla);
             existe = true;
@@ -32,6 +33,7 @@ public class entregas {
             System.out.println("no Existe " + tabla);
             existe = false;
         }
+
         tables.close();
         return existe;
     }
@@ -102,38 +104,41 @@ public class entregas {
             boolean existePedido = false;
             boolean existeDetallePedido = false;
 
-            // Comprueba que las tablas estén creadas
-            existeStock = existeTabla(conn, "Stock");
-            existePedido = existeTabla(conn, "Pedido");
-            existeDetallePedido = existeTabla(conn, "DetallePedido");
-
             // Menu principal
             while (running) {
-                System.out.println("---SISTEMA GUAPO DE INFORMACION---  \n" + "Menú:                              \n"
+                System.out.println("---SISTEMA GUAPO DE INFORMACION---  \n" + "Menú:\n"
                         + "1- Borrado y creación de tablas                           \n" + "0- Salir");
+
+                existePedido = existeTabla(conn, "PEDIDO");
+                existeStock = existeTabla(conn, "STOCK");
+                existeDetallePedido = existeTabla(conn, "DETALLEPEDIDO");
+
 
                 selection = scan.nextInt();
 
+                // Comprueba que las tablas estén creadas
+
                 switch (selection) {
                     case 1:
+
+                        if (existeDetallePedido) {
+                            borrarTabla(conn, "DETALLEPEDIDO");
+                            System.out.println("Se ha borrado la tabla DetallePedido");
+                        }
                         if (existeStock) {
-                            borrarTabla(conn, "Stock");
+                            borrarTabla(conn, "STOCK");
                             System.out.println("Se ha borrado la tabla Stock");
 
                         }
                         if (existePedido) {
-                            borrarTabla(conn, "Pedido");
+                            borrarTabla(conn, "PEDIDO");
                             System.out.println("Se ha borrado la tabla Pedido");
-                        }
-                        if (existeDetallePedido) {
-                            borrarTabla(conn, "DetallePedido");
-                            System.out.println("Se ha borrado la tabla DetallePedido");
                         }
 
                         crearTablas(conn);
                         System.out.println("Se han creado las tablas");
 
-                        break;
+                    break;
 
                     case 2:
                         System.out.println("2");
@@ -142,13 +147,15 @@ public class entregas {
 
                     case 3:
                         System.out.println("3");
-                        break;
+                    break;
 
                     case 0:
                         running = false;
                         conn.close();
                         System.out.println(">CONEXION BASE DE DATOS: CERRADA");
-                        break;
+                    break;
+
+
                 }
             }
 
