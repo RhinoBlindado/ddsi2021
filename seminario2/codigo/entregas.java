@@ -20,6 +20,37 @@ import java.lang.*;
 // Clase base
 public class entregas {
 
+    public static void insertarDatosStock(Connection conn) throws SQLException
+    {
+      /*  File datos = new File("./src/datosStock.txt");
+        Scanner scan = new Scanner(datos);
+        String aux;
+        String[] entrada;
+
+        while(scan.hasNextLine())
+        {
+            aux = scan.nextLine();
+            entrada = aux.split(' ')
+            System.out.println(entrada[0]+" "+entrada[1]);
+        }
+        scan.close();
+        */
+        Statement st = conn.createStatement();
+
+        // insert the data
+        st.executeUpdate("INSERT INTO STOCK VALUES (01, 10)");
+        st.executeUpdate("INSERT INTO STOCK VALUES (02, 20)");
+        st.executeUpdate("INSERT INTO STOCK VALUES (03, 15)");
+        st.executeUpdate("INSERT INTO STOCK VALUES (04, 7)");
+        st.executeUpdate("INSERT INTO STOCK VALUES (05, 100)");
+        st.executeUpdate("INSERT INTO STOCK VALUES (99, 124)");
+        st.executeUpdate("INSERT INTO STOCK VALUES (06, 27)");
+        st.executeUpdate("INSERT INTO STOCK VALUES (42, 42)");
+        st.executeUpdate("INSERT INTO STOCK VALUES (12, 21)");
+        st.executeUpdate("INSERT INTO STOCK VALUES (66, 99)");
+
+    }
+
     public static boolean existeTabla(Connection conn, String tabla) throws SQLException {
 
         boolean existe = false;
@@ -33,6 +64,8 @@ public class entregas {
             System.out.println("no Existe " + tabla);
             existe = false;
         }
+
+      //  System.out.println(tables.getString(1));
 
         tables.close();
         return existe;
@@ -106,8 +139,7 @@ public class entregas {
 
             // Menu principal
             while (running) {
-                System.out.println("---SISTEMA GUAPO DE INFORMACION---  \n" + "Menú:\n"
-                        + "1- Borrado y creación de tablas                           \n" + "0- Salir");
+                System.out.println("---SISTEMA GUAPO DE INFORMACION---  \n"+"Menú:\n"+ "1- Borrado y creación de tablas\n" + "0- Salir");
 
                 existePedido = existeTabla(conn, "PEDIDO");
                 existeStock = existeTabla(conn, "STOCK");
@@ -137,6 +169,7 @@ public class entregas {
 
                         crearTablas(conn);
                         System.out.println("Se han creado las tablas");
+                        insertarDatosStock(conn);
 
                     break;
 
