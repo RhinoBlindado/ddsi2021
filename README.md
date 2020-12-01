@@ -1,14 +1,15 @@
-Language: [Español](#fundamentos-de-redes) | [English](#network-fundamentals)
+Language: [Español](#diseño-y-desarrollo-de-sistemas-de-información) | [English](#design-and-development-of-information-systems)
 
 ---
 # Diseño y Desarrollo de Sistemas de Información #
 ## Curso 2020-2021, Grado en Ingeniería Informática, ETSIIT UGR.
-
 ### Introducción
 
 ### Compilación
 
 ### Contenido
+#### Seminario 2
+
 ---
 # Design and Development of Information Systems #
 ## 2020-2021 Course, Computer Science Engineering Degree, ETSIIT UGR.
@@ -18,3 +19,4 @@ Language: [Español](#fundamentos-de-redes) | [English](#network-fundamentals)
 ### Compilation
 
 ### Contents
+#### Seminar 2
