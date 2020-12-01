@@ -61,7 +61,10 @@ public class entregas {
 
     public static void insertarDatosStock(Connection conn) throws SQLException
     {
-      /*  File datos = new File("./src/datosStock.txt");
+
+        
+    /*
+        File datos = new File("./src/datosStock.txt");
         Scanner scan = new Scanner(datos);
         String aux;
         String[] entrada;
@@ -73,7 +76,15 @@ public class entregas {
             System.out.println(entrada[0]+" "+entrada[1]);
         }
         scan.close();
+    
+        //////////////////////////////////
+        PreparedStatement st = null;
+        st = conn.prepareStatement("LOAD DATA LOCAL INFILE 'datosStock.txt' 
+                                    INTO TABLE Stocks FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'(Cproducto, Cantidad)");
+        st.executeUpdate();
+
         */
+
         Statement st = conn.createStatement();
 
         // insert the data
@@ -90,11 +101,11 @@ public class entregas {
 
     }
 
-    public static boolean existeTabla(Connection conn, String tabla) throws SQLException {
+    public static boolean existeTabla(Connection conn, String tabla, String user) throws SQLException {
 
         boolean existe = false;
         DatabaseMetaData dbm = conn.getMetaData();
-        ResultSet tables = dbm.getTables(null, null, tabla, null);
+        ResultSet tables = dbm.getTables(null, user.toUpperCase(), tabla, null);
 
         if (tables.next()) {
             System.out.println("Existe " + tabla);
@@ -135,6 +146,7 @@ public class entregas {
 
         st.executeUpdate();
     }
+
 
     // Funcion: INSERTAR DETALLE PEDIDO
     public static void insertarDetalleP(Connection conn, int iDActual) throws SQLException
@@ -219,9 +231,9 @@ public class entregas {
                                     "2 - Dar Alta Nuevo Pedido\n" + "3 - Borrar un pedido\n" + 
                                     "0 - Cerrar Conexión de Base Datos y Salir");
 
-                existePedido = existeTabla(conn, "PEDIDO");
-                existeStock = existeTabla(conn, "STOCK");
-                existeDetallePedido = existeTabla(conn, "DETALLEPEDIDO");
+                existePedido = existeTabla(conn, "PEDIDO", user);
+                existeStock = existeTabla(conn, "STOCK", user);
+                existeDetallePedido = existeTabla(conn, "DETALLEPEDIDO", user);
 
                 selection = scan.nextInt();
 
@@ -231,6 +243,9 @@ public class entregas {
                     case 1:
                         System.out.println(">>INICIALIZANDO TABLAS...");
 
+                       
+
+                       
                         if (existeDetallePedido) {
                             borrarTabla(conn, "DETALLEPEDIDO");
                             System.out.println("Se ha borrado la tabla DetallePedido");
@@ -249,7 +264,7 @@ public class entregas {
                         System.out.println("Se han creado las tablas");
                         insertarDatosStock(conn);
                         System.out.println(">>INICIALIZANDO TABLAS: OK");
-
+                    
                     break;
 
                     case 2:
