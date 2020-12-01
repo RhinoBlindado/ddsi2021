@@ -153,7 +153,7 @@ public class entregas {
     {
         Scanner datosDetalle = new Scanner(System.in);
 
-        System.out.println(">> ID ARTÍCULO");
+        System.out.println(">> ID PRODUCTO");
         int idStock = datosDetalle.nextInt();
 
         System.out.println(">> CANTIDAD:");
@@ -166,6 +166,7 @@ public class entregas {
         int cantidadStock = rs.getInt("Cantidad");
         rs.close();
 
+        
 
         if(cantidadStock >= cantidadDetalle)
         {
@@ -308,12 +309,17 @@ public class entregas {
 
                     case 2:
                         System.out.println(">>DAR ALTA NUEVO PEDIDO");
+                        
+                        conn.setAutoCommit(false);
+                        
+                        Savepoint noPedido = conn.setSavepoint();
 
                         int iDActual = insertarPedido(conn);
-
                         boolean pedidoAbierto = true;
                         int subSelect;
-                      //  System.out.println("ID COSA:"+iDActual+" PRUEBA RESTA"+(iDActual*2));
+
+                        Savepoint sinDetallePedido = conn.setSavepoint();
+
                         while(pedidoAbierto)
                         {
                             System.out.println( "Menú:\n" + "1 - Añadir Detalle de Producto\n" + 
@@ -329,20 +335,23 @@ public class entregas {
                                 break;
 
                                 case 2:
-
+                                    conn.rollback(sinDetallePedido);
                                 break;
 
                                 case 3:
-                                    borrarPedido(conn, iDActual);
+                                    //borrarPedido(conn, iDActual);
+                                    conn.rollback(noPedido);
                                     pedidoAbierto = false;
                                 break;
 
                                 case 4:
+                                    conn.commit();
                                     pedidoAbierto = false;
                                 break;
                             }
                         }
 
+                        conn.setAutoCommit(true);
                     break;
 
                     case 3:
