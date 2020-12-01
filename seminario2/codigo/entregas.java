@@ -23,7 +23,7 @@ public class entregas {
 
     //static Integer iDPedido = 0;.
 
-    public static void cancelarPedido(Connection conn, int iDPedido) throws SQLException
+    public static void borrarPedido(Connection conn, int iDPedido) throws SQLException
     {
         Statement st = conn.createStatement();
         st.executeUpdate("DELETE FROM PEDIDO WHERE CPEDIDO="+iDPedido);
@@ -108,10 +108,10 @@ public class entregas {
         ResultSet tables = dbm.getTables(null, user.toUpperCase(), tabla, null);
 
         if (tables.next()) {
-            System.out.println("Existe " + tabla);
+           // System.out.println("Existe " + tabla);
             existe = true;
         } else {
-            System.out.println("no Existe " + tabla);
+           // System.out.println("no Existe " + tabla);
             existe = false;
         }
 
@@ -170,7 +170,10 @@ public class entregas {
         if(cantidadStock >= cantidadDetalle)
         {
             st.executeUpdate("UPDATE STOCK SET CANTIDAD="+(cantidadStock-cantidadDetalle)+" WHERE CPRODUCTO="+idStock);
-            st.executeUpdate("INSERT INTO DETALLEPEDIDO VALUES("+iDActual+", "+idStock+", "+cantidadDetalle+")");
+            st.executeUpdate("INSERT INTO DETALLEPEDIDO VALUES("+idStock+", "+iDActual+", "+cantidadDetalle+")");
+            System.out.println(">> Detalles insertados");
+            mostrarDetallesPedidos(conn);
+
         }
         else
         {
@@ -178,6 +181,42 @@ public class entregas {
         }
 
     }
+
+
+    public static void mostrarPedidos(Connection conn) throws SQLException
+    {
+
+        Statement st = conn.createStatement();
+
+
+        ResultSet rs = st.executeQuery("SELECT * FROM PEDIDO");
+
+        while(rs.next()){
+            System.out.println("Código pedido: " + rs.getString("CPEDIDO") + " - Cliente: " + rs.getString("CCLIENTE") 
+                                + " - Fecha pedido: " + rs.getString("FECHAPEDIDO") );
+
+        }
+
+    }
+
+
+    public static void mostrarDetallesPedidos(Connection conn) throws SQLException
+    {
+
+        Statement st = conn.createStatement();
+
+
+        ResultSet rs = st.executeQuery("SELECT * FROM DETALLEPEDIDO");
+
+        while(rs.next()){
+            System.out.println("Código producto: " + rs.getString("CPRODUCTO") + " - Código pedido: " + rs.getString("CPEDIDO") 
+                                + " - Cantidad: " + rs.getString("CANTIDAD") );
+
+        }
+
+    }
+
+
 
     // Función Main
     public static void main(String[] args) {
@@ -274,7 +313,7 @@ public class entregas {
 
                         boolean pedidoAbierto = true;
                         int subSelect;
-                        System.out.println("ID COSA:"+iDActual+" PRUEBA RESTA"+(iDActual*2));
+                      //  System.out.println("ID COSA:"+iDActual+" PRUEBA RESTA"+(iDActual*2));
                         while(pedidoAbierto)
                         {
                             System.out.println( "Menú:\n" + "1 - Añadir Detalle de Producto\n" + 
@@ -294,7 +333,8 @@ public class entregas {
                                 break;
 
                                 case 3:
-                                    cancelarPedido(conn, iDActual);
+                                    borrarPedido(conn, iDActual);
+                                    pedidoAbierto = false;
                                 break;
 
                                 case 4:
@@ -306,13 +346,26 @@ public class entregas {
                     break;
 
                     case 3:
-                        System.out.println("3");
+
+                        System.out.println(">>BORRAR PEDIDO");
+                        System.out.println(">>Lista de pedidos");
+                        mostrarPedidos(conn);
+                        Scanner scanPedido = new Scanner(System.in);
+                        System.out.println(">>Introduzca el código de pedido a eliminar");
+                        int pedidoSeleccionado;
+                        pedidoSeleccionado = scanPedido.nextInt();
+                        borrarPedido(conn, pedidoSeleccionado);
+                        System.out.println(">>Pedidos restantes");
+                        mostrarPedidos(conn);
+
+
                     break;
 
                     case 0:
                         running = false;
                         conn.close();
                         System.out.println(">CONEXION BASE DE DATOS: CERRADA");
+
                     break;
 
 
