@@ -20,12 +20,22 @@ import java.lang.*;
 // Clase base
 public class entregas {
 
+	/**
+	* @param conn 		Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+	* @param iDPedido	ID del pedido a borrar
+	* @brief 			Borra un pedido que pasamos como parámetro
+	*/
     public static void borrarPedido(Connection conn, int iDPedido) throws SQLException
     {
         Statement st = conn.createStatement();
         st.executeUpdate("DELETE FROM PEDIDO WHERE CPEDIDO="+iDPedido);
     }
 
+
+    /**
+	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java
+	* @brief 		Pide datos por terminal para crear un pedido e insertarlo en la base de datos
+	*/
     public static int insertarPedido(Connection conn) throws SQLException 
     {
         Scanner datosPedido = new Scanner(System.in);
@@ -33,16 +43,16 @@ public class entregas {
         int iDPedido = -1;
         while(datosExistentes)
         {
-            System.out.println(">>>Pedidos existentes:");
+            System.out.print(">>>Pedidos existentes: ");
             mostrarPedidos(conn);
 
-            System.out.println(">>>Introduce nuevo pedido:");
+            System.out.print(">>>Introduce nuevo pedido: ");
             try
             {
-                System.out.println(">>>ID Pedido:");
+                System.out.print(">>>ID Pedido: ");
                 iDPedido = datosPedido.nextInt();
 
-                System.out.println(">>>ID Cliente:");
+                System.out.print(">>>ID Cliente: ");
                 int iDCliente = datosPedido.nextInt();
 
                 Statement st = conn.createStatement();
@@ -59,6 +69,11 @@ public class entregas {
         return iDPedido;
     }
 
+
+    /**
+	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java
+	* @brief 		Inserta los datos de prueba en la base de datos
+	*/
     public static void insertarDatosStock(Connection conn) throws SQLException
     {
         Statement st = conn.createStatement();
@@ -77,6 +92,13 @@ public class entregas {
 
     }
 
+
+    /**
+	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+	* @param tabla	String que contiene el nombre de la tabla que se quiere comprobar
+	* @param user 	String que contiene el nombre del usuario
+	* @brief 		Comprueba la existencia de la tabla que se pasa como parámetro
+	*/
     public static boolean existeTabla(Connection conn, String tabla, String user) throws SQLException {
 
         boolean existe = false;
@@ -85,19 +107,37 @@ public class entregas {
 
         if (tables.next()) {
             existe = true;
-        } else {
+        } else {  //redundante ? 
             existe = false;
         }
         tables.close();
         return existe;
     }
 
+    
+    /**
+	* @param conn 		Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+	* @param tabla		String que contiene la tabla a borrar
+	* @brief 			Borra la tabla pasada como parámetro
+	*/
     public static void borrarTabla(Connection conn, String tabla) throws SQLException {
-        PreparedStatement st = null;
-        st = conn.prepareStatement("DROP TABLE " + tabla);
-        st.executeUpdate();
+    	try
+    	{
+        	PreparedStatement st = null;
+        	st = conn.prepareStatement("DROP TABLE " + tabla);
+        	st.executeUpdate();
+    	}
+    	catch (Exception e)
+    	{
+    		System.out.println(">>>ERROR: la tabla a borrar no existe.");
+    	}
     }
 
+
+    /**
+	* @param conn 		Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+	* @brief 			Crea las tablas de la base de datos
+	*/
     public static void crearTablas(Connection conn) throws SQLException {
         PreparedStatement st = null;
         st = conn.prepareStatement("CREATE TABLE Stock(CProducto INTEGER PRIMARY KEY, Cantidad INTEGER)");
@@ -119,11 +159,10 @@ public class entregas {
     }
 
 
-    // Funcion: INSERTAR DETALLE PEDIDO
+  
     public static void insertarDetalleP(Connection conn, int iDActual) throws SQLException
     {
         Scanner datosDetalle = new Scanner(System.in);
-
 
         System.out.println(">>>Productos existentes:");
         mostrarStock(conn);
@@ -142,49 +181,61 @@ public class entregas {
         int cantidadStock = rs.getInt("Cantidad");
         rs.close();
 
-        
-
         if(cantidadStock >= cantidadDetalle)
         {
-            st.executeUpdate("UPDATE STOCK SET CANTIDAD="+(cantidadStock-cantidadDetalle)+" WHERE CPRODUCTO="+idStock);
+            st.executeUpdate("UPDATE STOCK SET CANTIDAD="+(cantidadStock-cantidadDetalle)+" WHERE CPRODUCTO=" + idStock);
             st.executeUpdate("INSERT INTO DETALLEPEDIDO VALUES("+idStock+", "+iDActual+", "+cantidadDetalle+")");
             System.out.println(">>>DETALLES INSERTADOS: OK");
         }
         else
         {
-            System.out.println(">>>ERROR: CANTIDAD EN STOCK INSUFICIENTE, HAY "+cantidadStock+" DEL ARTICULO "+idStock);
+            System.out.println(">>>ERROR: CANTIDAD EN STOCK INSUFICIENTE, HAY "+cantidadStock+" UNIDADES DEL ARTICULO "+idStock);
         }
 
     }
 
 
+    /**
+	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java
+	* @brief 		Muestra todos los pedidos, así como su código, cliente y fecha
+	*/
     public static void mostrarPedidos(Connection conn) throws SQLException
     {
 
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM PEDIDO");
 
-        while(rs.next()){
+        while(rs.next())
+        {
             System.out.println("Código pedido: " + rs.getString("CPEDIDO") + " - Cliente: " + rs.getString("CCLIENTE") 
                                 + " - Fecha pedido: " + rs.getString("FECHAPEDIDO") );
-
         }
 
     }
 
+
+    /**
+	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java
+	* @brief 		Muestra los atributos de la tabla DetallePedido
+	*/
     public static void mostrarDetallesPedidos(Connection conn) throws SQLException
     {
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM DETALLEPEDIDO");
 
-        while(rs.next()){
+        while(rs.next())
+        {
             System.out.println("Código producto: " + rs.getString("CPRODUCTO") + " - Código pedido: " + rs.getString("CPEDIDO") 
                                 + " - Cantidad: " + rs.getString("CANTIDAD") );
-
         }
 
     }
 
+
+    /**
+	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java
+	* @brief 		Muestra los atributos de la tabla Stock
+	*/
     public static void mostrarStock(Connection conn) throws SQLException
     {
 
@@ -193,7 +244,7 @@ public class entregas {
 
         while(rs.next())
         {
-            System.out.println("Código producto: " + rs.getString("CPRODUCTO") + " - Cantinad: " + rs.getString("CANTIDAD"));
+            System.out.println("Código producto: " + rs.getString("CPRODUCTO") + " - Cantidad: " + rs.getString("CANTIDAD"));
         }
     }
 
