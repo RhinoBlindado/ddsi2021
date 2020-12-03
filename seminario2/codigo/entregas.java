@@ -32,6 +32,7 @@ public class entregas {
     }
 
 
+
     /**
 	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java
 	* @brief 		Pide datos por terminal para crear un pedido e insertarlo en la base de datos
@@ -43,16 +44,16 @@ public class entregas {
         int iDPedido = -1;
         while(datosExistentes)
         {
-            System.out.print(">>>Pedidos existentes: ");
+            System.out.println(">>>Pedidos existentes: ");
             mostrarPedidos(conn);
 
-            System.out.print(">>>Introduce nuevo pedido: ");
+            System.out.println(">>>Introduce nuevo pedido: ");
             try
             {
-                System.out.print(">>>ID Pedido: ");
+                System.out.println(">>>ID Pedido: ");
                 iDPedido = datosPedido.nextInt();
 
-                System.out.print(">>>ID Cliente: ");
+                System.out.println(">>>ID Cliente: ");
                 int iDCliente = datosPedido.nextInt();
 
                 Statement st = conn.createStatement();
@@ -114,6 +115,26 @@ public class entregas {
         return existe;
     }
 
+
+    /**
+    * @param conn       Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+    * @param tabla      Nombre de la tabla
+    * @brief            Comprobar si la tabla está vacía
+    */
+    public static boolean tablaVacia(Connection conn, String tabla) throws SQLException
+    {
+        boolean vacia = false;
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * from " + tabla);
+
+
+        if (rs.next() == false) 
+            vacia = true;
+
+        return vacia;
+            
+    }
+
     
     /**
 	* @param conn 		Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
@@ -121,16 +142,12 @@ public class entregas {
 	* @brief 			Borra la tabla pasada como parámetro
 	*/
     public static void borrarTabla(Connection conn, String tabla) throws SQLException {
-    	try
-    	{
-        	PreparedStatement st = null;
-        	st = conn.prepareStatement("DROP TABLE " + tabla);
-        	st.executeUpdate();
-    	}
-    	catch (Exception e)
-    	{
-    		System.out.println(">>>ERROR: la tabla a borrar no existe.");
-    	}
+    	
+        PreparedStatement st = null;
+        st = conn.prepareStatement("DROP TABLE " + tabla);
+        st.executeUpdate();
+    	
+    	
     }
 
 
@@ -386,16 +403,24 @@ public class entregas {
                         System.out.println(">>BORRAR PEDIDO");
                         if(existeStock && existePedido && existeDetallePedido)
                         {
-                            System.out.println(">>>Lista de pedidos");
-                            mostrarPedidos(conn);
-                            Scanner scanPedido = new Scanner(System.in);
-                            System.out.println(">>>Introduzca el código de pedido a eliminar");
-                            int pedidoSeleccionado;
-                            pedidoSeleccionado = scanPedido.nextInt();
-                            borrarPedido(conn, pedidoSeleccionado);
-                            System.out.println(">>>PEDIDO BORRADO");
-                            System.out.println(">>>Pedidos restantes");
-                            mostrarPedidos(conn);
+                            if(!tablaVacia(conn, "PEDIDO")){
+                                System.out.println(">>>Lista de pedidos");
+                                mostrarPedidos(conn);
+                                Scanner scanPedido = new Scanner(System.in);
+                                System.out.println(">>>Introduzca el código de pedido a eliminar");
+                                int pedidoSeleccionado;
+                                pedidoSeleccionado = scanPedido.nextInt();
+                                borrarPedido(conn, pedidoSeleccionado);
+                                System.out.println(">>>PEDIDO BORRADO");
+                                System.out.println(">>>Pedidos restantes");
+                                mostrarPedidos(conn);
+                            }
+
+                            else{
+
+                                System.out.println(">>ERROR: No hay pedidos para eliminar");
+   
+                            }
                         }
                         else
                         {
