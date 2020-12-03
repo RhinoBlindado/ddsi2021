@@ -35,6 +35,7 @@ public class entregas {
 
     /**
 	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java
+	* @return 		iDPedido, entero con el id del pedido creado
 	* @brief 		Pide datos por terminal para crear un pedido e insertarlo en la base de datos
 	*/
     public static int insertarPedido(Connection conn) throws SQLException 
@@ -98,6 +99,7 @@ public class entregas {
 	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
 	* @param tabla	String que contiene el nombre de la tabla que se quiere comprobar
 	* @param user 	String que contiene el nombre del usuario
+	* @return 		existe, boolean puesto a verdadero cuando la tabla existe, y a falso en otro caso
 	* @brief 		Comprueba la existencia de la tabla que se pasa como parámetro
 	*/
     public static boolean existeTabla(Connection conn, String tabla, String user) throws SQLException {
@@ -119,6 +121,7 @@ public class entregas {
     /**
     * @param conn       Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
     * @param tabla      Nombre de la tabla
+    * @return 			vacia, boolean puesto a verdadero si la tabla está vacía, falso si no
     * @brief            Comprobar si la tabla está vacía
     */
     public static boolean tablaVacia(Connection conn, String tabla) throws SQLException
