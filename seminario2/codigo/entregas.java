@@ -72,13 +72,13 @@ public class entregas {
 
     /**
 	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java
-	* @brief 		Inserta los datos de prueba en la base de datos
+	* @brief 		Inserta los datos por defecto en la base de datos
 	*/
     public static void insertarDatosStock(Connection conn) throws SQLException
     {
         Statement st = conn.createStatement();
 
-        // insert the data :c
+        // insert the data 
         st.executeUpdate("INSERT INTO STOCK VALUES (01, 10)");
         st.executeUpdate("INSERT INTO STOCK VALUES (02, 20)");
         st.executeUpdate("INSERT INTO STOCK VALUES (03, 15)");
@@ -107,7 +107,7 @@ public class entregas {
 
         if (tables.next()) {
             existe = true;
-        } else {  //redundante ? 
+        } else {  
             existe = false;
         }
         tables.close();
@@ -117,7 +117,7 @@ public class entregas {
     
     /**
 	* @param conn 		Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
-	* @param tabla		String que contiene la tabla a borrar
+	* @param tabla		String que contiene el nombre de la tabla a borrar
 	* @brief 			Borra la tabla pasada como parámetro
 	*/
     public static void borrarTabla(Connection conn, String tabla) throws SQLException {
@@ -159,7 +159,11 @@ public class entregas {
     }
 
 
-  
+    /**
+	* @param conn 		Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+    * @param idActual   ID del pedido a insertar detalles 
+	* @brief 			Inserta los detalles del pedido a la pabla del pedido pasado como parámetro 
+	*/
     public static void insertarDetalleP(Connection conn, int iDActual) throws SQLException
     {
         Scanner datosDetalle = new Scanner(System.in);
