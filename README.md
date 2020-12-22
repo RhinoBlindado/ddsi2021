@@ -9,6 +9,7 @@ Language: [Español](#diseño-y-desarrollo-de-sistemas-de-información) | [Engli
 
 ### Contenido
 #### Seminario 2
+#### Práctica 3
 
 ---
 # Design and Development of Information Systems #
@@ -20,3 +21,4 @@ Language: [Español](#diseño-y-desarrollo-de-sistemas-de-información) | [Engli
 
 ### Contents
 #### Seminar 2
+#### Practice 3
