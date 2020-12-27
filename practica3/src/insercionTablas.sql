@@ -13,7 +13,7 @@ CREATE TABLE JUGADOR
     apellidos VARCHAR2(32) NOT NULL,
     telefono VARCHAR(12),
    CHECK(correo LIKE '%___@___%'),
-   CHECK(teléfono LIKE '%+___%')
+   CHECK(telefono LIKE '%+___%')
 
 );
 
@@ -26,7 +26,7 @@ CREATE TABLE ENTRENADOR
     apellidos VARCHAR2(32) NOT NULL,
     telefono VARCHAR(12),
    CHECK(correo LIKE '%___@___%'),
-   CHECK(teléfono LIKE '%+___%')
+   CHECK(telefono LIKE '%+___%')
 );
 
 
@@ -50,26 +50,22 @@ CREATE TABLE COMPRA_REALIZA_INICIA(
     annoEdicion NUMBER REFERENCES EDICION(anno) NOT NULL
 );
 
-
 CREATE TABLE COMPRA_FINALIZADA
 (
     idCompra REFERENCES COMPRA_REALIZA_INICIA(idCompra) PRIMARY KEY,
     fechaFin DATE NOT NULL
 );
 
-
 CREATE TABLE COMPRA_PAGADA(
     idCompra REFERENCES COMPRA_FINALIZADA(idCompra) PRIMARY KEY,
     fechaPago DATE NOT NULL
 );
 
-
 CREATE TABLE ENTRADAS(
     idEntrada NUMBER PRIMARY KEY,
     tipo VARCHAR2(20) NOT NULL,
-    CHECK (tipo IN (‘BASICA’, ‘PREMIUM’, ‘VIP’))
+    CHECK (tipo IN ('BASICA', 'PREMIUM', 'VIP'))
 );
-
 
 CREATE TABLE ENTIDAD
 (
@@ -81,10 +77,6 @@ CREATE TABLE ENTIDAD
     CHECK(correo LIKE '%___@___%'),
     CHECK(telefono LIKE '%+___%')
 );
-
-
-
-
 
 CREATE TABLE PERSONAL(
     idPersonal NUMBER PRIMARY KEY,
@@ -105,12 +97,10 @@ CREATE TABLE PISTA
     CHECK(capacidad>0)
 );
 
-
 CREATE TABLE PEDIDO(
     numPedido NUMBER PRIMARY KEY,
     estado VARCHAR(20) CHECK (estado IN ('INICIADO','FINALIZADO', 'PAGADO', 'RECIBIDO')) NOT NULL
 );
-
 
 CREATE TABLE TIENE(
     idEntrada NUMBER REFERENCES ENTRADAS (idEntrada),
@@ -121,7 +111,6 @@ CREATE TABLE TIENE(
     PRIMARY KEY(idEntrada, anno),
     CHECK(precio > 0 AND cantidad > 0)
 );
-
 
 CREATE TABLE ANADE
 (
