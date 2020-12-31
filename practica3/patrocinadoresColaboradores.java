@@ -41,7 +41,7 @@ public class patrocinadoresColaboradores {
     public static void registrarEntidadPatrocinadora(Connection conn) throws SQLException {
         Scanner scan = new Scanner(System.in);
         int idEntidad, anno;
-        float cantidadDinero;
+        double cantidadDinero;
         boolean patrocinadorExistente = true;
 
         System.out.println(">>SUBSISTEMA 3 - PATROCINADORES / COLABORADORES\n"
@@ -69,12 +69,11 @@ public class patrocinadoresColaboradores {
                     anno = scan.nextInt();
 
                     System.out.print(">>Insertar Cantidad de Dinero con la que la Entidad va a patrocinar: ");
-                    cantidadDinero = scan.nextFloat();
+                    cantidadDinero = scan.nextDouble();
 
                     Statement st2 = conn.createStatement();
                     st2.executeUpdate(
                             "INSERT INTO PATROCINA VALUES (" + idEntidad + ", " + anno + ", " + cantidadDinero + ")");
-
                     patrocinadorExistente = false;
                     System.out.println(">>>ENTIDAD REGISTRADA COMO PATROCINADORA");
 
@@ -85,28 +84,37 @@ public class patrocinadoresColaboradores {
         }
     }
 
-    /*
-     * public static void main(String[] args) { boolean running = true; Scanner scan
-     * = new Scanner(System.in); int selection;
-     * 
-     * // Conexión a la BD System.out.println("---CONEXIÓN A BASE DE DATOS---");
-     * String user, pass;
-     * 
-     * System.out.println(">USUARIO: "); user = scan.next();
-     * 
-     * System.out.println(">CONTRASEÑA: "); pass = scan.next();
-     * 
-     * Connection conn = null; try { conn = DriverManager.getConnection(
-     * "jdbc:oracle:thin:@//oracle0.ugr.es:1521/practbd.oracle0.ugr.es", user,
-     * pass);
-     * 
-     * if (conn != null) { System.out.println(">CONEXION BASE DE DATOS: ABIERTA");
-     * 
-     * } else { System.out.println(">CONEXION BASE DE DATOS: ERROR"); }
-     * 
-     * registrarEntidadPatrocinadora(conn);
-     * 
-     * } catch (SQLException e) { System.err.format("SQL State: %s\n%s\n",
-     * e.getSQLState(), e.getMessage()); } }
-     */
+    public static void main(String[] args) {
+        boolean running = true;
+        Scanner scan = new Scanner(System.in);
+        int selection;
+
+        // Conexión a la BD System.out.println("---CONEXIÓN A BASE DE DATOS---");
+        String user, pass;
+
+        System.out.println(">USUARIO: ");
+        user = scan.next();
+
+        System.out.println(">CONTRASEÑA: ");
+        pass = scan.next();
+
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection("jdbc:oracle:thin:@//oracle0.ugr.es:1521/practbd.oracle0.ugr.es", user,
+                    pass);
+
+            if (conn != null) {
+                System.out.println(">CONEXION BASE DE DATOS: ABIERTA");
+
+            } else {
+                System.out.println(">CONEXION BASE DE DATOS: ERROR");
+            }
+
+            registrarEntidadPatrocinadora(conn);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+        }
+    }
+
 }
