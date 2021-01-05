@@ -9,6 +9,3 @@ exe:
 
 clean:
 	rm -f *.class
-
-usuariosEntradas.class: usuariosEntradas.java
-	javac -cp .:./src/ojdbc10.jar usuariosEntradas.java
