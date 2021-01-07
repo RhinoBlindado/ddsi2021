@@ -47,31 +47,33 @@ public class usuariosEntradas
     private static void obtenerIDCompras(Connection conn, int anno) throws SQLException
     {
         Statement st = conn.createStatement();
-        ResultSet rs = st.executeQuery("SELECT * FROM COMPRA_REALIZA_INICIA WHERE ANNO="+anno);
+        ResultSet rs = st.executeQuery("SELECT * FROM COMPRA_REALIZA_INICIA WHERE ANNOEDICION="+anno);
 
         while(rs.next())
         {
             System.out.println("ID Compra:" + rs.getString("IDCOMPRA") + " Fecha: " + rs.getString("FECHAINICIO") 
                                 + "ID Usuario: " + rs.getString("IDUSUARIO") );
         }
+        
     }
 
     // Metodos Publicos
     public static void annadirEntradasACompra(Connection conn) throws SQLException
     {
         Scanner scan = new Scanner(System.in);
-        int idCompra, anno, idEntrada, cantidad, finCompra = 0;
-        bool enCompra;
+        int idCompra, anno, idEntrada, cantidadCompra, finCompra = 0;
+        boolean enCompra;
 
         //  DATOS PREVIOS
+        System.out.println(">>DATOS PREVIOS");
         //      Elegir edicion en particular.
         // padelTournamentSystem.mostrarEdicion(conn);
-        System.out.print(">>Seleccionar Edicion: ");
+        System.out.print(">>>Seleccionar Edicion: ");
         anno = scan.nextInt();
 
         //      Elegir ID de la Compra.
         obtenerIDCompras(conn, anno);
-        System.out.print(">>Seleccionar Compra: ");
+        System.out.print(">>>Seleccionar ID Compra: ");
         idCompra = scan.nextInt();
 
         // INICIO SUBSISTEMA
@@ -84,30 +86,33 @@ public class usuariosEntradas
 
         //      Seleccionar tipo Entrada y Cantidad
         mostrarTipoEntradas(conn, anno);
-        System.out.print(">>Seleccionar Tipo Entrada: ");
+        System.out.print(">>>Seleccionar Tipo Entrada: ");
         idEntrada = scan.nextInt();
 
-        System.out.print(">>Seleccionar Cantidad: ");
-        cantidad = scan.nextInt();
+        System.out.print(">>>Seleccionar Cantidad: ");
+        cantidadCompra = scan.nextInt();
 
         //      Obtener cantidad original.
         int cantidadEntradas = obtenerCantidadEntrada(conn, idEntrada);
 
         //      Finalizar y "pagar", añadir más entradas o cancelar.
-        if(cantidad <= cantidadEntradas)
+        Statement st = conn.createStatement();
+        if(cantidadCompra <= cantidadEntradas)
         {
-            Statement st = conn.createStatement();
-            st.executeUpdate("INSERT INTO ANADE VALUES ("+idCompra+", "+anno+", "+idEntrada+", "+cantidad+")");
-            st.executeUpdate("UPDATE TIENE SET CANTIDAD="+(cantidad-cantidadEntradas)+" WHERE IDENTRADA="+idEntrada+" AND ANNO="+anno);
+            System.out.println("AQUI");
+            st.executeUpdate("INSERT INTO ANADE VALUES ("+anno+", "+idCompra+", "+idEntrada+", "+cantidadEntradas+")");
+            System.out.println("AQUI: WTF"+(cantidadEntradas-cantidadCompra));
+            st.executeUpdate("UPDATE TIENE SET CANTIDAD="+(cantidadEntradas-cantidadCompra)+" WHERE IDENTRADA="+idEntrada+" AND ANNO="+anno);
+            System.out.println("AQUI");
         }
         else
         {
-            System.out.printl(">>ERROR: Cantidad ingresada ("+cantidad+") es mayor que la cantidad de entradas disponibles ("+cantidadEntradas+").");
+            System.out.println(">>ERROR: Cantidad ingresada ("+cantidadCompra+") es mayor que la cantidad de entradas disponibles ("+cantidadEntradas+").");
         }
 
         while (finCompra != 1)
         {
-            System.out.print(">>¿Desea finalizar la compra? [1 - Si, 0 - No]: ");
+            System.out.print(">>>¿Desea finalizar la compra? [1 - Si, 0 - No]: ");
             finCompra = scan.nextInt();
         
             if(finCompra == 0)
@@ -126,7 +131,7 @@ public class usuariosEntradas
             }
             else
             {
-                System.out.println(">>Selección Incorrecta. Vuelva a Intentar.");
+                System.out.println(">>>Selección Incorrecta. Vuelva a Intentar.");
             }
         }
     }
@@ -157,6 +162,7 @@ public class usuariosEntradas
             }
 
             annadirEntradasACompra(conn);
+            conn.close();
 
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
