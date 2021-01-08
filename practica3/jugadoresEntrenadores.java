@@ -16,9 +16,15 @@ import java.lang.*;
 // Clase Base
 public class jugadoresEntrenadores {
     // Metodos Privados
+    /**
+     * @brief Función que muestra todas las parejas de una edición
+     * @param conn Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+     * @param anno Edicion sobre la cual mostrar las parejas
+     */
     private static void mostrarParejas(Connection conn,int anno) throws SQLException {
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM PARTICIPA_ENTRENA WHERE ANNO="+anno);
+
 
         while (rs.next()) {
             System.out.println(
@@ -27,6 +33,10 @@ public class jugadoresEntrenadores {
                             + rs.getString("IDENTRENADOR") + " Ranking de la pareja: " + rs.getString("RANKING"));
         }
     }
+    /**
+     * @brief Función que muestra todas las ediciones del torneo
+     * @param conn Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+     */
 
     private static void mostrarEdiciones(Connection conn) throws SQLException {
         Statement st = conn.createStatement();
@@ -39,44 +49,98 @@ public class jugadoresEntrenadores {
     
 
     // Metodos Publicos
+    /**
+     * @brief Función que actualiza el ranking a una pareja de una edicion del torneo
+     * @param conn Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+     */
     public static void annadirRankingAPareja(Connection conn) throws SQLException
     {
         Scanner scan = new Scanner(System.in);
         int rankin,anno,idPareja1,idPareja2;
-
+        boolean annobien = true;
+        boolean pareja1 = true;
+        boolean pareja2 = true;
+      
         System.out.print(">>SUBSISTEMA 1 - JUGADORES / ENTRENADORES\n" +
                          ">>Añadir Ranking a una pareja\n\n");
         
-       
+        Statement st = conn.createStatement();
+        ResultSet rs;
         //  Elegir edicion en particular
             
             mostrarEdiciones(conn);
-            System.out.println(">>Seleccionar Edicion: ");
-            anno = scan.nextInt();
+            
+            while(annobien){
+                System.out.println(">>Seleccionar Edicion: ");
+                anno = scan.nextInt();
+               
+                 rs = st.executeQuery("SELECT * FROM EDICION WHERE anno=" + anno);
 
-        //  Seleccionar tipo Entrada y Cantidad
-            mostrarParejas(conn, anno);
-            System.out.println(">>>Seleccionar Pareja : ");
-            System.out.print(">>Seleccionar ID Jugador 1 : ");
-            idPareja1 = scan.nextInt();
-            System.out.println("");
-            System.out.print(">>Seleccionar ID Jugador 2 : ");
-            idPareja2 = scan.nextInt();
-            System.out.println("");
-            System.out.print(">>Insertar Ranking: ");
-            rankin = scan.nextInt();
+                if (rs.next() == false) {
+                        System.out.println("\nEl anno introducido no es valido");
+                        rs.close();
+                }
+                else{
 
-        //  Finalizar y "pagar", añadir más entradas o cancelar.
-            Statement st = conn.createStatement();
-            st.executeUpdate("UPDATE  PARTICIPA_ENTRENA SET RANKING="+rankin+"WHERE ANNO="+anno+"AND IDJUGADOR1=" + idPareja1+" AND IDJUGADOR2=" +idPareja2);
-        
+                  mostrarParejas(conn, anno);
+                  rs = st.executeQuery("SELECT * FROM PARTICIPA_ENTRENA WHERE anno=" + anno);
+                  if(rs.next() == false){
+                    System.out.println("\nEl anno  no es valido");
+                    annobien = true;
+                  }else{
 
-     
+                  
+                      
+                            annobien = false;
+                 try{
+
+                        while(pareja1){   
+                                System.out.println(">>>Seleccionar Pareja : ");
+                                System.out.print(">>Seleccionar ID Jugador 1 : ");
+                                idPareja1 = scan.nextInt();        
+                                rs = st.executeQuery("SELECT * FROM PARTICIPA_ENTRENA WHERE IDJUGADOR1=" + idPareja1);
+
+                                if (rs.next() == false) {
+                                    System.out.println("\nEl ID jugador1 introducido no es valido");
+                                    rs.close();
+                                } else {   
+                                        pareja1 = false;
+                                        System.out.println("");
+                                while(pareja2){   
+                                                pareja2 = false;
+                                                System.out.print(">>Seleccionar ID Jugador 2 : ");
+                                                idPareja2 = scan.nextInt();
+                                                rs = st.executeQuery("SELECT * FROM PARTICIPA_ENTRENA WHERE IDJUGADOR1=" + idPareja1 + "AND IDJUGADOR2=" + idPareja2);
 
 
-        
+                                if (rs.next() == false) {
+                                                System.out.println("\nEl ID jugador2 introducido no es valido");
+                                                rs.close();
+                                }else {   
+            
+                                        System.out.println("");
+                                        System.out.print(">>Insertar Ranking: ");
+                                        rankin = scan.nextInt();
+                                 if(rankin < 0 ){
+                                        System.err.format("ranking no valido");
+                                }else {
+                                        st.executeUpdate("UPDATE  PARTICIPA_ENTRENA SET RANKING="+rankin+"WHERE ANNO="+anno+"AND IDJUGADOR1=" + idPareja1+" AND IDJUGADOR2=" +idPareja2);
+                                        System.out.println("Se ha actualizado el ranking ");
+                                      }
+                                }
+                        } // END WHILE PAREJA 2
+                    }
+
+                }//END WHILE PAREJA 1   
+       }
+       catch (SQLException e) {
+           System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+       }
     }
-
+    } // END WHILE DE ANNO
+}
+    
+}
 
     public static void main(String[] args) {
         
@@ -105,10 +169,11 @@ public class jugadoresEntrenadores {
             }
 
             annadirRankingAPareja(conn);
-
+            //mostrarParejas(conn, 2018);
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
         }
+        scan.close();
     }
 }
 
