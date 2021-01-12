@@ -18,22 +18,21 @@ public class pedidosMateriales {
        
 
    /**
-	* @param conn 		Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
-	* @brief 			Crea un nuevo pedido
-	*/
+    * @param conn       Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+    * @brief            Crea un nuevo pedido
+    */
     public static int crearPedido(Connection conn) throws SQLException {
 
         Statement st = conn.createStatement();
         int numPedido;
-        string num;
+        String num;
 
-        ResultSet rs = st.executeQuery("SELECT TOP 1 * FROM PEDIDO ORDER BY numPedido DESC");
-
-        numPedido = rs.getInt("numPedido") + 1;
+        ResultSet rs = st.executeQuery("SELECT * FROM PEDIDO WHERE NUMPEDIDO=(SELECT MAX(NUMPEDIDO) FROM PEDIDO)");
+        rs.next();
+        numPedido = rs.getInt("NUMPEDIDO") + 1;
 
         st.executeUpdate("INSERT INTO PEDIDO VALUES ("+ numPedido + ", 'INICIADO')");
 
-        st.executeUpdate();
 
         return numPedido;
     }
@@ -42,9 +41,9 @@ public class pedidosMateriales {
 
 
     /**
-	* @param conn 	Objeto que proporciona el vínculo entre la base de datos y la aplicación en java
-	* @brief 		Muestra todos los materiales
-	*/
+    * @param conn   Objeto que proporciona el vínculo entre la base de datos y la aplicación en java
+    * @brief        Muestra todos los materiales
+    */
     public static void mostrarMateriales(Connection conn) throws SQLException
     {
 
@@ -60,20 +59,38 @@ public class pedidosMateriales {
     }
 
 
+    public static void mostrarDetallesPedido(Connection conn, int numPedido) throws SQLException
+    {
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM PIDE WHERE NUMPEDIDO=" + numPedido);
+
+
+        while(rs.next()){
+            System.out.println(" - idMaterial: " + rs.getString("idMaterial") 
+                                    + " -> cantidad: " + rs.getString("cantidad")); 
+        }
+    
+    }
+
+    
+
+
    /**
-	* @param conn 		Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
-	* @brief 			Crea un nuevo pedido
-	*/
+    * @param conn       Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
+    * @brief            Crea un nuevo pedido
+    */
     public static int aniadirMaterial(Connection conn, int numPedido, int idMaterial, int cantidad) throws SQLException {
 
         Statement st = conn.createStatement();
 
+        st.executeUpdate("INSERT INTO PIDE VALUES (" + numPedido + ", " + idMaterial + ", " + cantidad + ")");
+        
+        ResultSet rs = st.executeQuery("SELECT * FROM MATERIAL_PROPORCIONADO WHERE idMaterial=" + idMaterial);
+        rs.next();
+        int nuevaCantidad = rs.getInt("CANTIDAD") - cantidad;
 
-        st.executeUpdate("INSERT INTO PIDE VALUES ("+ numPedido + ", " + idMaterial ", " + cantidad + ")");
+        st.executeUpdate("UPDATE MATERIAL_PROPORCIONADO SET CANTIDAD=" + nuevaCantidad + "WHERE idMaterial=" + idMaterial);
 
-
-
-        st.executeUpdate();
 
         return numPedido;
     }
@@ -82,7 +99,7 @@ public class pedidosMateriales {
     * @param conn       Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
     * @brief            Realizar un pedido de materiales
     */
-    public static int pedirMateriales(Connection conn) throws SQLException {
+    public static void pedirMateriales(Connection conn) throws SQLException {
 
         Statement st = conn.createStatement();
         Scanner datosDetalle = new Scanner(System.in);
@@ -93,94 +110,97 @@ public class pedidosMateriales {
         while(!parar){
 
             System.out.println( "- SUBSISTEMA 3 - PEDIDOS/MATERIALES -\n" + "Realizar pedido de materiales:\n" + "1 - Crear pedido\n" + 
-                                    "2 - Añadir material\n" + "3 - Borrar un pedido\n" + 
-                                    "0 - Salir");
-            selection = scan.nextInt();
+                                    "2 - Añadir material\n" +  "0 - Salir");
+            selection = datosDetalle.nextInt();
             System.out.println("\n");
-            Savepoint noPedido = conn.setSavepoint();
-
-            case 1:
-                        System.out.println(">>CREANDO PEDIDO...");
-                       
+           // Savepoint noPedido = conn.setSavepoint();
+            switch (selection) {
+                case 1:
+                            System.out.println(">>CREANDO PEDIDO...");
                             numPedido = crearPedido(conn); 
-                            System.out.println(">>>El número de pedido es:"+numPedido);
+                            System.out.println(">>>El número de pedido es: "+numPedido + "\n");
 
-            break;
+                break;
 
-            case 2: 
-                    if(numPedido != -1){
-                         System.out.println(">>>Productos materiales existentes:");
-                         mostrarMateriales(conn);
-
-                         System.out.println(">>>Inserta el material a añadir al pedido:");
-                         System.out.println(">>>ID Material");
-                         int idMaterial = datosDetalle.nextInt();
-
-
-                         System.out.println(">>>Inserta la cantidad:");
-                         int cantidad = datosDetalle.nextInt();
-
-                         aniadirMaterial(conn, numPedido, idMaterial, cantidad);
-
-                    }
-
-                    else
-                        System.out.println(">>ERROR:Debe crear primero un nuevo pedido");
-
-
-            break;
-
-            case 3:
+                case 2: 
                         if(numPedido != -1){
-                            System.out.println(">>PEDIDO ACTUAL CANCELADO");
-                            conn.rollback(noPedido);
-                            numPedido = -1;
+
+                             //se muestran los diferentes materiales disponibles
+                             System.out.println(">>>Productos materiales existentes:");
+                             mostrarMateriales(conn);
+                         
+                            try {
+                                 System.out.println(">>>Inserta el material a añadir al pedido (Todos tienen que ser de la misma patrocinadora):");
+                                 System.out.println(">>>ID Material");
+                                 int idMaterial = datosDetalle.nextInt();
+
+                                 // se comprueba que el idMaterial es correcto
+                                 ResultSet rs = st.executeQuery("SELECT * FROM MATERIAL_PROPORCIONADO WHERE idMaterial=" + idMaterial);
+                                 if(rs.next() == false){
+                                    System.out.println(
+                                    "\n>>>ERROR El idMaterial no existe, inténtelo de nuevo");
+                                    rs.close();
+                                 }
+
+                                 System.out.println(">>>Inserta la cantidad:");
+                                 int cantidad = datosDetalle.nextInt();
+
+                                 //se comprueba que cantidad > 0
+                                 while (cantidad < 0) {
+                                    System.out.print("\n>>ERROR La cantidad debe de ser superior a 0, vuelve a introducir una: ");
+                                    cantidad = datosDetalle.nextInt();
+                                 }
+
+                                 // se comprueba que haya suficiente cantidad en el inventario
+                                 ResultSet rs2 = st.executeQuery("SELECT * FROM MATERIAL_PROPORCIONADO WHERE idMaterial=" + idMaterial);
+                                 rs.next();
+                                 int nuevaCantidad = rs2.getInt("CANTIDAD") - cantidad;
+                                 if(nuevaCantidad < 0){
+                                    System.out.println(
+                                    "\n>>>ERROR La cantidad es superior a la disponible, inténtelo de nuevo");
+                                    rs2.close();
+                                 }
+
+                                 //se añade el material al pedido
+                                 aniadirMaterial(conn, numPedido, idMaterial, cantidad);
+
+                                 //se muestran los detalles del pedido actualizados
+                                 mostrarDetallesPedido(conn, numPedido);
+
+                           } catch (SQLException e) {
+                                System.err.format("\n\nSQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+                                System.out.println("\n\n>>>Vuelve a probar");
+                            }
+
                         }
 
                         else
                             System.out.println(">>ERROR:Debe crear primero un nuevo pedido");
 
 
-            break;
+                break;
 
-            case 0:
-                    parar = true;
-            break;
+              /*  case 3:
+                            if(numPedido != -1){
+                                System.out.println(">>PEDIDO ACTUAL CANCELADO");
+                                conn.rollback(noPedido);
+                                numPedido = -1;
+                            }
 
-        }
-    }
+                            else
+                                System.out.println(">>ERROR:Debe crear primero un nuevo pedido");
 
 
-    public static void main(String[] args) {
-        boolean running = true;
-        Scanner scan = new Scanner(System.in);
-        int selection;
+                break; */
 
-        // Conexión a la BD System.out.println("---CONEXIÓN A BASE DE DATOS---");
-        String user, pass;
+                case 0:
+                        parar = true;
+                break;
 
-        System.out.println(">USUARIO: ");
-        user = scan.next();
-
-        System.out.println(">CONTRASEÑA: ");
-        pass = scan.next();
-
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection("jdbc:oracle:thin:@//oracle0.ugr.es:1521/practbd.oracle0.ugr.es", user,
-                    pass);
-
-            if (conn != null) {
-                System.out.println(">CONEXION BASE DE DATOS: ABIERTA");
-
-            } else {
-                System.out.println(">CONEXION BASE DE DATOS: ERROR");
             }
-
-            pedirMateriales(conn);
-
-        } catch (SQLException e) {
-            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
         }
+
     }
+
 }
+
