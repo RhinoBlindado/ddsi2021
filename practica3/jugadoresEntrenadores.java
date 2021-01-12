@@ -75,7 +75,7 @@ public class jugadoresEntrenadores {
                 anno = scan.nextInt();
                
                  rs = st.executeQuery("SELECT * FROM EDICION WHERE anno=" + anno);
-
+                //Comprobamos que ese año está en la base de datos
                 if (rs.next() == false) {
                         System.out.println("\nEl anno introducido no es valido");
                         rs.close();
@@ -84,13 +84,11 @@ public class jugadoresEntrenadores {
 
                   mostrarParejas(conn, anno);
                   rs = st.executeQuery("SELECT * FROM PARTICIPA_ENTRENA WHERE anno=" + anno);
+                  //Comprobamos que hay parejas en el año seleccionado
                   if(rs.next() == false){
-                    System.out.println("\nEl anno  no es valido");
+                    System.out.println("\n En el año seleccionado no existen parejas de jugadores");
                     annobien = true;
-                  }else{
-
-                  
-                      
+                  }else{  
                             annobien = false;
                  try{
 
@@ -99,7 +97,7 @@ public class jugadoresEntrenadores {
                                 System.out.print(">>Seleccionar ID Jugador 1 : ");
                                 idPareja1 = scan.nextInt();        
                                 rs = st.executeQuery("SELECT * FROM PARTICIPA_ENTRENA WHERE IDJUGADOR1=" + idPareja1);
-
+                                //Comprobamos que el id del jugador 1 esté en la base de datos
                                 if (rs.next() == false) {
                                     System.out.println("\nEl ID jugador1 introducido no es valido");
                                     rs.close();
@@ -110,9 +108,10 @@ public class jugadoresEntrenadores {
                                                
                                                 System.out.print(">>Seleccionar ID Jugador 2 : ");
                                                 idPareja2 = scan.nextInt();
+                                                //Comprobamos que el id del jugador 2 este en la base de datos y emparejado con el jugador 1
                                                 rs = st.executeQuery("SELECT * FROM PARTICIPA_ENTRENA WHERE IDJUGADOR1=" + idPareja1 + "AND IDJUGADOR2=" + idPareja2);
 
-
+                                    //Comprobamos que el id del jugador 2 este en la base de datos y emparejado con el jugador 1
                                 if (rs.next() == false) {
                                                 System.out.println("\nEl ID jugador2 introducido no es valido");
                                                 rs.close();
@@ -122,7 +121,7 @@ public class jugadoresEntrenadores {
                                         System.out.print(">>Insertar Ranking: ");
                                         rankin = scan.nextInt();
                                  if(rankin < 0 ){
-                                        System.err.format("ranking no valido");
+                                        System.err.format("Ranking no valido");
                                 }else {
                                         st.executeUpdate("UPDATE  PARTICIPA_ENTRENA SET RANKING="+rankin+"WHERE ANNO="+anno+"AND IDJUGADOR1=" + idPareja1+" AND IDJUGADOR2=" +idPareja2);
                                         System.out.println("Se ha actualizado el ranking ");
