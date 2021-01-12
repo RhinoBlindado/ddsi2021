@@ -107,7 +107,7 @@ public class jugadoresEntrenadores {
                                         pareja1 = false;
                                         System.out.println("");
                                 while(pareja2){   
-                                                pareja2 = false;
+                                               
                                                 System.out.print(">>Seleccionar ID Jugador 2 : ");
                                                 idPareja2 = scan.nextInt();
                                                 rs = st.executeQuery("SELECT * FROM PARTICIPA_ENTRENA WHERE IDJUGADOR1=" + idPareja1 + "AND IDJUGADOR2=" + idPareja2);
@@ -117,7 +117,7 @@ public class jugadoresEntrenadores {
                                                 System.out.println("\nEl ID jugador2 introducido no es valido");
                                                 rs.close();
                                 }else {   
-            
+                                    pareja2 = false;
                                         System.out.println("");
                                         System.out.print(">>Insertar Ranking: ");
                                         rankin = scan.nextInt();
