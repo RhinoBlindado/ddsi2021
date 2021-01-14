@@ -22,6 +22,10 @@ import jdk.nashorn.api.tree.WhileLoopTree;
 import java.util.ArrayList;
 import java.lang.*; 
 
+
+/**
+ * 
+ */
 class Ticket
 {
     public static int ID;
@@ -41,10 +45,11 @@ public class usuariosEntradas
     //      METODOS AUXILIARES
 
     /**
-     * @param conn Objeto que proporciona el vínculo entre la base de datos y la
-     *             aplicación en java
-     * @return      
-     * @brief Muestra todas las Ediciones registradas
+     * @brief       Muestra por pantalla las ediciones y las añade una lista.
+     * @throws      SQLException - Excepción de SQL
+     * @param conn  Objeto que proporciona el vínculo entre la base de datos y la
+     *              aplicación en java
+     * @return      Lista de Enteros conteniendo los años de las ediciones.    
      */
     private static ArrayList<Integer> mostrarEdiciones(Connection conn) throws SQLException 
     {
@@ -61,10 +66,11 @@ public class usuariosEntradas
     }
 
     /**
-     * 
-     * @param conn
-     * @param anno
-     * @throws SQLException
+     * @brief       Muestra por pantalla los compras iniciadas y añadir el ID a la lista.
+     * @param conn  Objeto que proporciona el vínculo entre la base de datos y la
+     *              aplicación en java
+     * @param anno  Año de la edición
+     * @throws      SQLException
      */
     private static ArrayList<Integer> obtenerIDCompras(Connection conn, int anno) throws SQLException
     {
@@ -84,9 +90,11 @@ public class usuariosEntradas
     }
 
     /**
-     * 
-     * @param conn
-     * @param anno
+     * @brief       Obtener las Entradas de la Base de Datos e insertarlas en una clase auxiliar Ticket para 
+     *              manejar la adición de entradas.
+     * @param conn  Objeto que proporciona el vínculo entre la base de datos y la
+     *              aplicación en java.
+     * @param anno  Año de la edición.
      * @throws SQLException
      */
     private static ArrayList<Ticket> obtenerEntradas(Connection conn, int anno) throws SQLException
@@ -102,6 +110,10 @@ public class usuariosEntradas
         return vectorEntradas;
     }
 
+    /**
+     * @brief           Mostrar pon pantalla los detalles de las Entradas por medio de la lista de objetos Ticket
+     * @param entradas  Lista de objetos tipo Ticket
+     */
     private static void mostrarTipoEntradas(ArrayList<Ticket> entradas)
     {
         for(int i=0; i < entradas.size(); i++)
@@ -110,6 +122,11 @@ public class usuariosEntradas
         }
     }
 
+    /**
+     * @brief                   Mostrar el resumen de las entradas añadidas para finalizarse.
+     * @param vectorEntradas    Lista de objetos tipo Ticket
+     * @param vectorFin         Mapa que almacena cuantas entradas se han añadido de cada tipo.
+     */
     private static void mostrarEntradasAnnadidas(ArrayList<Ticket> vectorEntradas, Map<Integer, Integer> vectorFin)
     {
         float suma = 0;
@@ -126,8 +143,9 @@ public class usuariosEntradas
         System.out.println("\tTotal a pagar: "+suma+"€");
     }
     /**   METODO PRINCIPAL
-     * 
-     * @param conn
+     * @brief               Para una compra ya iniciada, añadirle entradas para luego marcarla como finalizada para que se pueda comprar.
+     * @param conn          Objeto que proporciona el vínculo entre la base de datos y la
+     *                      aplicación en java.
      * @throws SQLException
      */
     public static void annadirEntradasACompra(Connection conn) throws SQLException
@@ -138,7 +156,7 @@ public class usuariosEntradas
 
 
         // DATOS PREVIOS
-        // Se capturan los datos previos necesarios para realizar el subsistema como tal.
+        //      Se capturan los datos previos necesarios para realizar el subsistema como tal.
         System.out.println(">>DATOS PREVIOS");
 
         //      Mostrar Ediciones 
@@ -179,23 +197,25 @@ public class usuariosEntradas
             }
         }
 
-        //      INICIO SUBSISTEMA
+        // INICIO SUBSISTEMA
         System.out.print("\n>>SUBSISTEMA 2 - USUARIOS / ENTRADAS\n" +
                          ">>Añadir Entradas a una compra\n\n");
 
-        //      Seleccionar tipo Entrada y Cantidad
         int indiceEntrada = -1, statusCompra = 0;
         ArrayList<Ticket>  vectorEntradas = obtenerEntradas(conn, actAnno);
         Map<Integer, Integer> vectorFin =  new HashMap<>();
         
+        //      Inicializar el Mapa para que tenga dentro los IDs de los tipos de Entradas a cero.
         for(int i=0; i < vectorEntradas.size(); i++)
         {
             vectorFin.put(vectorEntradas.get(i).ID, 0);
         }
 
+        //      Comenzar el proceso de compra como tal.
         while(enCompra)
         {
             enBucle = true;
+            //  Seleccionar entradas de las disponibles.
             while(enBucle)
             {
                 mostrarTipoEntradas(vectorEntradas);
@@ -219,7 +239,6 @@ public class usuariosEntradas
 
             System.out.print(">>>Seleccionar Cantidad: ");
             cantidadCompra = scan.nextInt();
-    
             if(cantidadCompra > 0)
             {
                 if(cantidadCompra <= vectorEntradas.get(indiceEntrada).cantidad)
@@ -257,9 +276,8 @@ public class usuariosEntradas
             }
         }
         
+        //  Mostrar los cambios a realizarse, crear un savepoint dado que se va a realizar una transacción.
         mostrarEntradasAnnadidas(vectorEntradas, vectorFin);
-        //      Finalizar y "pagar", añadir más entradas o cancelar.
-
         conn.setAutoCommit(false);
         Savepoint entradasNoAnnadidas = conn.setSavepoint();
 
@@ -277,6 +295,7 @@ public class usuariosEntradas
             }
             else if(finCompra == 1)
             {
+                // Si se acepta, realizar los cambios pertinentes y luego realizar commit.
                 Statement st = conn.createStatement();
                 for(int i=0; i < vectorEntradas.size(); i++)
                 {
