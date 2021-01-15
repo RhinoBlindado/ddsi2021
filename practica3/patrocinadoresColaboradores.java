@@ -28,7 +28,7 @@ public class patrocinadoresColaboradores {
 
         while (rs.next()) {
             System.out.println(
-                    "\nID Entidad:" + rs.getString("IDENTIDAD") + " Nombre Entidad: " + rs.getString("NOMBREENTIDAD")
+                    "ID Entidad:" + rs.getString("IDENTIDAD") + " Nombre Entidad: " + rs.getString("NOMBREENTIDAD")
                             + " Nombre Persona Contacto: " + rs.getString("NOMBRECONTACTO") + " Correo Electronico: "
                             + rs.getString("CORREO") + " Numero de Telefono: " + rs.getString("TELEFONO"));
         }
@@ -44,11 +44,28 @@ public class patrocinadoresColaboradores {
         ResultSet rs = st.executeQuery("SELECT * FROM PATROCINA");
 
         while (rs.next()) {
-            System.out.println("\nID Entidad:" + rs.getString("IDENTIDAD") + " Anno: " + rs.getString("ANNO")
+            System.out.println("ID Entidad:" + rs.getString("IDENTIDAD") + " Anno: " + rs.getString("ANNO")
                     + " Cantidad de dinero con la que patrocina: " + rs.getString("CANTIDADDINERO"));
 
         }
     }
+	
+	/**
+     * @param conn Objeto que proporciona el vínculo entre la base de datos y la
+     *             aplicación en java
+     * @brief Muestra todos los Colaboradores registrados
+     */
+    private static void mostrarColaboradores(Connection conn) throws SQLException {
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM COLABORA");
+
+        while (rs.next()) {
+            System.out.println("ID Entidad:" + rs.getString("IDENTIDAD") + " Anno: " + rs.getString("ANNO")
+                    + " Cantidad de dinero con la que colabora: " + rs.getString("CANTIDADDINERO"));
+
+        }
+    }
+
 
     /**
      * @param conn Objeto que proporciona el vínculo entre la base de datos y la
@@ -112,6 +129,9 @@ public class patrocinadoresColaboradores {
 
             System.out.println("\n>>Entidades Registradas como PATROCINADORAS en el torneo: ");
             mostrarPatrocinadores(conn);
+
+			 System.out.println("\n>>Entidades Registradas como COLABORADORAS en el torneo: ");
+            mostrarColaboradores(conn);
 
             System.out.println("\n>>Insertar ID Entidad que se quiere como Patrocinadora: ");
             idEntidad = scan.nextInt();

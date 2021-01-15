@@ -84,12 +84,13 @@ public class padelTournamentSystem {
                     break;
 
                     case 4:
-                    
+                    	personalHorarios pH = new personalHorarios();
+						pH.mostrarPersonalNoTrabaja(conn);
                     break;
 
                     case 5:
-                       // pedidosMateriales pM = new pedidosMateriales();
-                        //pM.pedirMateriales(conn);
+                       	pedidosMateriales pM = new pedidosMateriales();
+                        pM.pedirMateriales(conn);
                     
                     break;
 
