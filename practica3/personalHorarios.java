@@ -17,14 +17,12 @@ import java.lang.*;
 public class personalHorarios {
     // Metodos Privados
     
-    private static void mostrarPersonalNoTrabaja(Connection conn, int anno) throws SQLException {
+    private static void mostrarPersonalNoTrabaja(Connection conn) throws SQLException {
         Statement st = conn.createStatement();
-        ResultSet rs = ("SELECT * FROM PERSONAL WHERE NOT EXISTS( 
-                       SELECT trabaja.idPersonal FROM TRABAJA 
-                       WHERE trabaja.idPersonal = Personal.idPersonal 
-                       AND trabaja.anno ="+anno );
-
-                                       
+        int anno;
+        System.out.println(">>>Introduce el anno del que obtener el personal que no trabaja: ");
+        anno = scan.nextInt();
+        ResultSet rs = ("SELECT * FROM PERSONAL WHERE NOT EXISTS(SELECT trabaja.idPersonal FROM TRABAJA WHERE trabaja.idPersonal = Personal.idPersonal AND trabaja.anno ="+anno ")");																															                                     
         while (rs.next()) {
             System.out.println(
                     "\nID Personal:" + rs.getString("IDPERSONAL") + " Correo: " + rs.getString("CORREO")
