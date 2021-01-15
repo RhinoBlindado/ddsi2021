@@ -28,9 +28,9 @@ import java.lang.*;
  */
 class Ticket
 {
-    public static int ID;
-    public static int cantidad;
-    public static float costo;
+    public  int ID;
+    public  int cantidad;
+    public  float costo;
 
     public Ticket(int _ID, int _cantidad, float _costo)
     {
@@ -153,6 +153,7 @@ public class usuariosEntradas
         Scanner scan = new Scanner(System.in);
         int actIDCompra = 0, actAnno = 0, actIDEntrada = 0, cantidadCompra = 0, finCompra = 0;
         boolean enCompra = true, enBucle, enFinCompra = true;
+        Statement st = conn.createStatement();
 
 
         // DATOS PREVIOS
@@ -296,7 +297,6 @@ public class usuariosEntradas
             else if(finCompra == 1)
             {
                 // Si se acepta, realizar los cambios pertinentes y luego realizar commit.
-                Statement st = conn.createStatement();
                 for(int i=0; i < vectorEntradas.size(); i++)
                 {
                     if(vectorFin.get(vectorEntradas.get(i).ID) > 0)
