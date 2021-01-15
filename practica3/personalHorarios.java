@@ -95,5 +95,6 @@ public class personalHorarios {
 					"\nEl personal que no trabajo en la edicion " + anno + " fue: " + rs.getString("NOMBRE") + rs.getString("APELLIDOS") +
 					", con idPersonal " + rs.getString("IDPERSONAL") + ", correo -> " + rs.getString("CORREO") + " y nº de telefono: " + 
                     rs.getString("TELEFONO"));
-    }    
+    	}    
+	}
 }
