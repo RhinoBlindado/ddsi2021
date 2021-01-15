@@ -59,13 +59,7 @@ public class personalHorarios {
 
         while (rs.next()) {
             System.out.print(rs.getString("NOMBRE"));
-            if(!rs.isLast()) {
-            	System.out.print(", ");
-            }
-            else {
-            	System.out.print(".");
-            }
-
+            System.out.print(" ");
         }
     }
 
