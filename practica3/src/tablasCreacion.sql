@@ -171,6 +171,8 @@ CREATE TABLE MATERIAL_PROPORCIONADO(
     nombreMaterial VARCHAR2(30) NOT NULL,
     idEntidad NUMBER,
     anno NUMBER,
+    cantidad NUMBER,
+    CHECK (cantidad > 0),
 
     FOREIGN KEY(idEntidad, anno) REFERENCES PATROCINA(idEntidad, anno)
 );
