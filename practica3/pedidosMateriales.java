@@ -74,6 +74,8 @@ public class pedidosMateriales {
             System.out.println(" - idMaterial: " + rs.getString("idMaterial") 
                                     + " -> cantidad: " + rs.getString("cantidad")); 
         }
+
+        System.out.println("\n");
     
     }
 
@@ -82,7 +84,7 @@ public class pedidosMateriales {
 
    /**
     * @param conn       Objeto que proporciona el vínculo entre la base de datos y la aplicación en java 
-    * @brief            Crea un nuevo pedido
+    * @brief            Añadir material al pedido
     */
     public static void aniadirMaterial(Connection conn, int numPedido, int idMaterial, int cantidad) throws SQLException {
 
@@ -107,8 +109,10 @@ public class pedidosMateriales {
     */
     public static void pedirMateriales(Connection conn) throws SQLException {
 
+        
         Statement st = conn.createStatement();
         Scanner datosDetalle = new Scanner(System.in);
+        conn.setAutoCommit(false);
         int numPedido = -1;
         boolean parar = false;
         int selection;
@@ -206,6 +210,8 @@ public class pedidosMateriales {
                 break;
 
             }
+
+            conn.setAutoCommit(true);
         }
 
     }
