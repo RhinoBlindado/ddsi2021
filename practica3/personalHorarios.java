@@ -17,54 +17,17 @@ import java.lang.*;
 public class personalHorarios {
     // Metodos Privados
     
-    private static void mostrarPersonalNoTrabaja(Connection conn) throws SQLException {
+    public static void mostrarPersonalNoTrabaja(Connection conn) throws SQLException {
         Statement st = conn.createStatement();
         int anno;
         System.out.println(">>>Introduce el anno del que obtener el personal que no trabaja: ");
         anno = scan.nextInt();
-        ResultSet rs = ("SELECT * FROM PERSONAL WHERE NOT EXISTS(SELECT trabaja.idPersonal FROM TRABAJA WHERE trabaja.idPersonal = Personal.idPersonal AND trabaja.anno ="+anno ")");																															                                     
+        ResultSet rs = ("SELECT * FROM PERSONAL WHERE NOT EXISTS(SELECT trabaja.idPersonal FROM TRABAJA WHERE trabaja.idPersonal = Personal.idPersonal AND trabaja.anno ="+anno+ ")");																															                                     
         while (rs.next()) {
             System.out.println(
                     "\nID Personal:" + rs.getString("IDPERSONAL") + " Correo: " + rs.getString("CORREO")
                             + " Nombre: " + rs.getString("NOMBRE") + " Apellidos: "
                             + rs.getString("APELLIDOS") + " Numero de Telefono: " + rs.getString("TELEFONO"));
         }
-    }
-
-// SELECT * FROM PERSONAL WHERE NOT EXISTS( 
-// SELECT trabaja.idPersonal FROM TRABAJA WHERE trabaja.idPersonal = Personal.idPersonal);
-
-    
-    public static void main(String[] args) {
-        boolean running = true;
-        Scanner scan = new Scanner(System.in);
-        int selection;
-
-        String user, pass;
-
-        System.out.println(">USUARIO: ");
-        user = scan.next();
-
-        System.out.println(">CONTRASEÑA: ");
-        pass = scan.next();
-
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection("jdbc:oracle:thin:@//oracle0.ugr.es:1521/practbd.oracle0.ugr.es", user,
-                    pass);
-
-            if (conn != null) {
-                System.out.println(">CONEXION BASE DE DATOS: ABIERTA");
-
-            } else {
-                System.out.println(">CONEXION BASE DE DATOS: ERROR");
-            }
-
-            mostrarPersonalNoTrabaja(conn);
-            conn.close();
-
-        } catch (SQLException e) {
-            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
-        }
-    }
+    }    
 }
