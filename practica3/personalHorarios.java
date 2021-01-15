@@ -71,7 +71,7 @@ public class personalHorarios {
 
         mostrarPersonal(conn);
 
-        System.out.println(">>>Introduce la edicion de la que obtener informacion del personal: ");
+        System.out.println("\n>>>Introduce la edición de la que obtener información del personal: ");
         anno = scan.nextInt();
 
 		ArrayList<Integer> vectorEdiciones = annoEdiciones(conn);
@@ -80,27 +80,27 @@ public class personalHorarios {
         	System.out.println("\n>>>ERROR al introducir la edición, estas son las ediciones disponibles: ");
             mostrarEdiciones(conn);
 
-           	System.out.print("\n>>>Pruebe a insertar otra edicion: ");
+           	System.out.print("\n>>>Pruebe a insertar otra edición: ");
             anno = scan.nextInt();
         }
 
         ResultSet rs = st.executeQuery("SELECT * FROM PERSONAL WHERE EXISTS(SELECT trabaja.idPersonal FROM TRABAJA WHERE trabaja.idPersonal = Personal.idPersonal AND trabaja.anno ="+anno+ ")");
-        System.out.println("\nEl personal que trabajo en la edicion " + anno + " fue: ");																															                                     
+        System.out.println("\nEl personal que trabajó en la edicion " + anno + " fue: ");																															                                     
         while (rs.next()) {
             System.out.println(
 					rs.getString("NOMBRE") + " " + rs.getString("APELLIDOS") +
-					", con idPersonal " + rs.getString("IDPERSONAL") + ", correo -> " + rs.getString("CORREO") + " y nº de telefono: " + 
+					", con idPersonal " + rs.getString("IDPERSONAL") + ", correo -> " + rs.getString("CORREO") + " y nº de teléfono: " + 
                     rs.getString("TELEFONO"));
     	}
 		
 		System.out.println("-------------------------------------------------------------------");
 
         rs = st.executeQuery("SELECT * FROM PERSONAL WHERE NOT EXISTS(SELECT trabaja.idPersonal FROM TRABAJA WHERE trabaja.idPersonal = Personal.idPersonal AND trabaja.anno ="+anno+ ")");
-        System.out.println("\nEl personal que no trabajo en la edicion " + anno + " fue: ");																															                                     
+        System.out.println("\nEl personal que no trabajó en la edicion " + anno + " fue: ");																															                                     
         while (rs.next()) {
             System.out.println(
 					rs.getString("NOMBRE") + " " + rs.getString("APELLIDOS") +
-					", con idPersonal " + rs.getString("IDPERSONAL") + ", correo -> " + rs.getString("CORREO") + " y nº de telefono: " + 
+					", con idPersonal " + rs.getString("IDPERSONAL") + ", correo -> " + rs.getString("CORREO") + " y nº de teléfono: " + 
                     rs.getString("TELEFONO"));
     	}    
 	}
