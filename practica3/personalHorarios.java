@@ -54,13 +54,15 @@ public class personalHorarios {
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM PERSONAL");
 
-        System.out.println("Personal disponible y trabajador");
-        System.out.println("--------------------------------");
+        System.out.println("Personal del torneo");
+        System.out.println("-------------------");
 
         while (rs.next()) {
             System.out.print(rs.getString("NOMBRE"));
-            System.out.print(", ");
-            if(!rs.next()) {
+            if(!rs.isLast()) {
+            	System.out.print(", ");
+            }
+            else {
             	System.out.print(".");
             }
 
@@ -75,24 +77,35 @@ public class personalHorarios {
 
         mostrarPersonal(conn);
 
-        System.out.println(">>>Introduce la edicion de la que obtener el personal que no trabaja: ");
+        System.out.println(">>>Introduce la edicion de la que obtener informacion del personal: ");
         anno = scan.nextInt();
 
 		ArrayList<Integer> vectorEdiciones = annoEdiciones(conn);
 
         while (!vectorEdiciones.contains(anno)) {
-        	System.out.println(
-                                "\n>>>ERROR al introducir la edición, estas son las ediciones disponibles: ");
+        	System.out.println("\n>>>ERROR al introducir la edición, estas son las ediciones disponibles: ");
             mostrarEdiciones(conn);
 
-           	System.out.print("\n>>Vuelva a insertar edicion de la que quiere obtener el personal que no trabaja: ");
+           	System.out.print("\n>>>Pruebe a insertar otra edicion: ");
             anno = scan.nextInt();
         }
-		
-        ResultSet rs = st.executeQuery("SELECT * FROM PERSONAL WHERE NOT EXISTS(SELECT trabaja.idPersonal FROM TRABAJA WHERE trabaja.idPersonal = Personal.idPersonal AND trabaja.anno ="+anno+ ")");																															                                     
+
+        ResultSet rs = st.executeQuery("SELECT * FROM PERSONAL WHERE EXISTS(SELECT trabaja.idPersonal FROM TRABAJA WHERE trabaja.idPersonal = Personal.idPersonal AND trabaja.anno ="+anno+ ")");
+        System.out.println("\nEl personal que trabajo en la edicion " + anno + " fue: ");																															                                     
         while (rs.next()) {
             System.out.println(
-					"\nEl personal que no trabajo en la edicion " + anno + " fue: " + rs.getString("NOMBRE") + rs.getString("APELLIDOS") +
+					rs.getString("NOMBRE") + " " + rs.getString("APELLIDOS") +
+					", con idPersonal " + rs.getString("IDPERSONAL") + ", correo -> " + rs.getString("CORREO") + " y nº de telefono: " + 
+                    rs.getString("TELEFONO"));
+    	}
+		
+		System.out.println("-------------------------------------------------------------------");
+
+        rs = st.executeQuery("SELECT * FROM PERSONAL WHERE NOT EXISTS(SELECT trabaja.idPersonal FROM TRABAJA WHERE trabaja.idPersonal = Personal.idPersonal AND trabaja.anno ="+anno+ ")");
+        System.out.println("\nEl personal que no trabajo en la edicion " + anno + " fue: ");																															                                     
+        while (rs.next()) {
+            System.out.println(
+					rs.getString("NOMBRE") + " " + rs.getString("APELLIDOS") +
 					", con idPersonal " + rs.getString("IDPERSONAL") + ", correo -> " + rs.getString("CORREO") + " y nº de telefono: " + 
                     rs.getString("TELEFONO"));
     	}    
