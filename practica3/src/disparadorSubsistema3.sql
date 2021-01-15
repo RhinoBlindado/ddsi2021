@@ -1,4 +1,4 @@
--- Disparador para que no se permita que una entidad colaboradoradora sea patrocinadora en una misma edición
+-- Disparador para que no se permita que una entidad colaboradora sea patrocinadora en una misma edición
 
 CREATE OR REPLACE TRIGGER EntidadUnicaPorEdicion 
 	BEFORE 
