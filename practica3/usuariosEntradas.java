@@ -150,179 +150,189 @@ public class usuariosEntradas
         boolean enCompra = true, enBucle, enFinCompra = true;
         Statement st = conn.createStatement();
 
-
-        // DATOS PREVIOS
-        //      Se capturan los datos previos necesarios para realizar el subsistema como tal.
-        System.out.println(">>DATOS PREVIOS");
-
-        //      Mostrar Ediciones 
-        enBucle = true;
-        ArrayList<Integer> ediciones;
-        while(enBucle)
+        try
         {
-            ediciones = mostrarEdiciones(conn);        
-            System.out.print(">>>Seleccionar Edición: ");
-            actAnno = scan.nextInt();
+            // DATOS PREVIOS
+            //      Se capturan los datos previos necesarios para realizar el subsistema como tal.
+            System.out.println(">>DATOS PREVIOS");
 
-            if(ediciones.contains(actAnno))
+            //      Mostrar Ediciones 
+            enBucle = true;
+            ArrayList<Integer> ediciones;
+            while(enBucle)
             {
-                enBucle = false;
-            }
-            else
-            {
-                System.out.print(">>>ERROR: Edición incorrecta. Vuelva a intentar.\n");
-            }
-        }
+                ediciones = mostrarEdiciones(conn);        
+                System.out.print(">>>Seleccionar Edición: ");
+                actAnno = scan.nextInt();
 
-        //      Seleccionar un ID de Compra que esté en la Edición elegida.
-        enBucle = true;
-        ArrayList<Integer> idCompras;
-        while(enBucle)
-        {
-            idCompras = obtenerIDCompras(conn, actAnno);
-
-            if(!idCompras.isEmpty())
-            {
-                System.out.print(">>>Seleccionar ID Compra: ");
-                actIDCompra = scan.nextInt();
-
-                if(idCompras.contains(actIDCompra))
+                if(ediciones.contains(actAnno))
                 {
                     enBucle = false;
                 }
                 else
                 {
-                    System.out.print(">>>ERROR: ID de Compra Incorrecta. Vuelva a intentar.\n");
+                    System.out.print(">>>ERROR: Edición incorrecta. Vuelva a intentar.\n");
                 }
             }
-            else
-            {
-                System.out.print(">>>AVISO: No hay compras iniciadas.\n");
-                enBucle = false;
-                enCompra = false;
-                enFinCompra = false;
-            }
-        }
 
-        // INICIO SUBSISTEMA
-        System.out.print("\n>>SUBSISTEMA 2 - USUARIOS / ENTRADAS\n" +
-                         ">>Añadir Entradas a una compra\n\n");
-
-        int indiceEntrada = -1, statusCompra = 0;
-        ArrayList<Ticket>  vectorEntradas = obtenerEntradas(conn, actAnno);
-        Map<Integer, Integer> vectorFin =  new HashMap<>();
-        
-        //      Inicializar el Mapa para que tenga dentro los IDs de los tipos de Entradas a cero.
-        for(int i=0; i < vectorEntradas.size(); i++)
-        {
-            vectorFin.put(vectorEntradas.get(i).ID, 0);
-        }
-
-        //      Comenzar el proceso de compra como tal.
-        while(enCompra)
-        {
+            //      Seleccionar un ID de Compra que esté en la Edición elegida.
             enBucle = true;
-            //  Seleccionar entradas de las disponibles.
+            ArrayList<Integer> idCompras;
             while(enBucle)
             {
-                mostrarTipoEntradas(vectorEntradas);
-                System.out.print(">>>Seleccionar Tipo Entrada: ");
-                actIDEntrada = scan.nextInt();
-    
-                for(int i=0; i < vectorEntradas.size(); i++)
+                idCompras = obtenerIDCompras(conn, actAnno);
+
+                if(!idCompras.isEmpty())
                 {
-                    if(actIDEntrada == vectorEntradas.get(i).ID)
+                    System.out.print(">>>Seleccionar ID Compra: ");
+                    actIDCompra = scan.nextInt();
+
+                    if(idCompras.contains(actIDCompra))
                     {
                         enBucle = false;
-                        indiceEntrada = i;
                     }
-                }
-    
-                if(enBucle)
-                {
-                    System.out.print(">>>ERROR: ID de Entrada incorrecto. Vuelva a intentar.\n");
-                }
-            }
-
-            System.out.print(">>>Seleccionar Cantidad: ");
-            cantidadCompra = scan.nextInt();
-            if(cantidadCompra > 0)
-            {
-                if(cantidadCompra <= vectorEntradas.get(indiceEntrada).cantidad)
-                {
-                    vectorEntradas.get(indiceEntrada).cantidad = vectorEntradas.get(indiceEntrada).cantidad - cantidadCompra;
-                    vectorFin.replace(actIDEntrada, (vectorFin.get(actIDEntrada)) + cantidadCompra);
+                    else
+                    {
+                        System.out.print(">>>ERROR: ID de Compra Incorrecta. Vuelva a intentar.\n");
+                    }
                 }
                 else
                 {
-                    System.out.println(">>>ERROR: Cantidad de entradas ("+cantidadCompra+") excede la cantidad disponible("+vectorEntradas.get(indiceEntrada).cantidad+").");
-                }
-            }
-            else
-            {
-                System.out.println(">>>ERROR: Cantidad de entradas tiene que ser mayor que 0.");
-            }
-    
-            enBucle = true;
-            while(enBucle)
-            {
-                System.out.print("¿Finalizar adición de entradas? [1 - Sí | 0 - No]: ");
-                statusCompra = scan.nextInt();
-                if(statusCompra == 0 || statusCompra == 1)
-                {
+                    System.out.print(">>>AVISO: No hay compras iniciadas.\n");
                     enBucle = false;
-                    if(statusCompra == 1)
+                    enCompra = false;
+                    enFinCompra = false;
+                }
+            }
+
+            // INICIO SUBSISTEMA
+            System.out.print("\n>>SUBSISTEMA 2 - USUARIOS / ENTRADAS\n" +
+                            ">>Añadir Entradas a una compra\n\n");
+
+            int indiceEntrada = -1, statusCompra = 0;
+            ArrayList<Ticket>  vectorEntradas = obtenerEntradas(conn, actAnno);
+            Map<Integer, Integer> vectorFin =  new HashMap<>();
+            
+            //      Inicializar el Mapa para que tenga dentro los IDs de los tipos de Entradas a cero.
+            for(int i=0; i < vectorEntradas.size(); i++)
+            {
+                vectorFin.put(vectorEntradas.get(i).ID, 0);
+            }
+
+            //      Comenzar el proceso de compra como tal.
+            while(enCompra)
+            {
+                enBucle = true;
+                //  Seleccionar entradas de las disponibles.
+                while(enBucle)
+                {
+                    mostrarTipoEntradas(vectorEntradas);
+                    System.out.print(">>>Seleccionar Tipo Entrada: ");
+                    actIDEntrada = scan.nextInt();
+        
+                    for(int i=0; i < vectorEntradas.size(); i++)
                     {
-                        enCompra = false;
+                        if(actIDEntrada == vectorEntradas.get(i).ID)
+                        {
+                            enBucle = false;
+                            indiceEntrada = i;
+                        }
+                    }
+        
+                    if(enBucle)
+                    {
+                        System.out.print(">>>ERROR: ID de Entrada incorrecto. Vuelva a intentar.\n");
+                    }
+                }
+
+                System.out.print(">>>Seleccionar Cantidad: ");
+                cantidadCompra = scan.nextInt();
+                if(cantidadCompra > 0)
+                {
+                    if(cantidadCompra <= vectorEntradas.get(indiceEntrada).cantidad)
+                    {
+                        vectorEntradas.get(indiceEntrada).cantidad = vectorEntradas.get(indiceEntrada).cantidad - cantidadCompra;
+                        vectorFin.replace(actIDEntrada, (vectorFin.get(actIDEntrada)) + cantidadCompra);
+                    }
+                    else
+                    {
+                        System.out.println(">>>ERROR: Cantidad de entradas ("+cantidadCompra+") excede la cantidad disponible("+vectorEntradas.get(indiceEntrada).cantidad+").");
                     }
                 }
                 else
                 {
-                    System.out.println(">>>ERROR: Selección incorrecta.");
+                    System.out.println(">>>ERROR: Cantidad de entradas tiene que ser mayor que 0.");
                 }
-            }
-        }
         
-        //  Mostrar los cambios a realizarse, crear un savepoint dado que se va a realizar una transacción.
-        conn.setAutoCommit(false);
-        Savepoint entradasNoAnnadidas = conn.setSavepoint();
-
-        while (enFinCompra)
-        {
-            mostrarEntradasAnnadidas(vectorEntradas, vectorFin);
-            System.out.print(">>>¿Desea finalizar la compra? [1 - Si, finalizar | 0 - No, cancelar]: ");
-            finCompra = scan.nextInt();
-        
-            if(finCompra == 0)
-            {
-                // Si se cancela, hacer rollback
-                conn.rollback(entradasNoAnnadidas);
-                System.out.print(">>>COMPRA CANCELADA\n\n");
-                enFinCompra = false;
-            }
-            else if(finCompra == 1)
-            {
-                // Si se acepta, realizar los cambios pertinentes y luego realizar commit.
-                for(int i=0; i < vectorEntradas.size(); i++)
+                enBucle = true;
+                while(enBucle)
                 {
-                    if(vectorFin.get(vectorEntradas.get(i).ID) > 0)
+                    System.out.print("¿Finalizar adición de entradas? [1 - Sí | 0 - No]: ");
+                    statusCompra = scan.nextInt();
+                    if(statusCompra == 0 || statusCompra == 1)
                     {
-                        st.executeUpdate("INSERT INTO ANADE VALUES ("+actAnno+", "+actIDCompra+", "+vectorEntradas.get(i).ID+", "+vectorFin.get(vectorEntradas.get(i).ID)+")");
-                        st.executeUpdate("UPDATE TIENE SET CANTIDAD="+vectorFin.get(vectorEntradas.get(i).ID)+" WHERE IDENTRADA="+actIDEntrada+" AND ANNO="+actAnno);
+                        enBucle = false;
+                        if(statusCompra == 1)
+                        {
+                            enCompra = false;
+                        }
+                    }
+                    else
+                    {
+                        System.out.println(">>>ERROR: Selección incorrecta.");
                     }
                 }
+            }
+            
+            //  Mostrar los cambios a realizarse, crear un savepoint dado que se va a realizar una transacción.
+            conn.setAutoCommit(false);
+            Savepoint entradasNoAnnadidas = conn.setSavepoint();
 
-                st.executeUpdate("INSERT INTO COMPRA_FINALIZADA VALUES ("+actIDCompra+", SYSDATE)");
-                // Fin transacción
-                conn.commit();
-                System.out.print(">>>COMPRA FINALIZADA\n\n");
-                enFinCompra = false;
-            }
-            else
+            while (enFinCompra)
             {
-                System.out.println(">>>Selección Incorrecta. Vuelva a Intentar.");
+                mostrarEntradasAnnadidas(vectorEntradas, vectorFin);
+                System.out.print(">>>¿Desea finalizar la compra? [1 - Si, finalizar | 0 - No, cancelar]: ");
+                finCompra = scan.nextInt();
+            
+                if(finCompra == 0)
+                {
+                    // Si se cancela, hacer rollback
+                    conn.rollback(entradasNoAnnadidas);
+                    System.out.print(">>>COMPRA CANCELADA\n\n");
+                    enFinCompra = false;
+                }
+                else if(finCompra == 1)
+                {
+                    // Si se acepta, realizar los cambios pertinentes y luego realizar commit.
+                    for(int i=0; i < vectorEntradas.size(); i++)
+                    {
+                        if(vectorFin.get(vectorEntradas.get(i).ID) > 0)
+                        {
+                            st.executeUpdate("INSERT INTO ANADE VALUES ("+actAnno+", "+actIDCompra+", "+vectorEntradas.get(i).ID+", "+vectorFin.get(vectorEntradas.get(i).ID)+")");
+                            st.executeUpdate("UPDATE TIENE SET CANTIDAD="+vectorFin.get(vectorEntradas.get(i).ID)+" WHERE IDENTRADA="+actIDEntrada+" AND ANNO="+actAnno);
+                        }
+                    }
+
+                    st.executeUpdate("INSERT INTO COMPRA_FINALIZADA VALUES ("+actIDCompra+", SYSDATE)");
+                    // Fin transacción
+                    conn.commit();
+                    System.out.print(">>>COMPRA FINALIZADA\n\n");
+                    enFinCompra = false;
+                }
+                else
+                {
+                    System.out.println(">>>Selección Incorrecta. Vuelva a Intentar.");
+                }
             }
+            conn.setAutoCommit(true);
         }
-        conn.setAutoCommit(true);
+        catch (SQLException e) 
+        {
+            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+        }
+        catch (Exception e)
+        {
+            System.err.println(">>>ERROR EN SUBSISTEMA 2");
+        }
     }
 }
