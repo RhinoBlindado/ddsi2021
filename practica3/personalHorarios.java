@@ -60,7 +60,7 @@ public class personalHorarios {
         while (rs.next()) {
             System.out.print(rs.getString("NOMBRE"));
             System.out.print(", ");
-            if(!rs.next) {
+            if(!rs.next()) {
             	System.out.print(".");
             }
 
