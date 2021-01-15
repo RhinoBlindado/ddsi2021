@@ -36,7 +36,7 @@ The information system can be divided in five subsystems: **Players/Trainers**, 
 
 Additionally, there was a practical seminar to test the connection between Java to ETSIIT's Oracle Database.
 ### :busts_in_silhouette: Team
-The pratices where made along with [Eladia Gómez Morales](https://github.com/elaypunto), [José Correa Maldonado](https://github.com/JoseMaldonadoC), [Amanda Moyano Romero](https://github.com/amxndam) and [Jesús Muela Cárdenas](https://github.com/KTJota).
+The practices where made alongside [Eladia Gómez Morales](https://github.com/elaypunto), [José Correa Maldonado](https://github.com/JoseMaldonadoC), [Amanda Moyano Romero](https://github.com/amxndam) and [Jesús Muela Cárdenas](https://github.com/KTJota).
 ### :gear: Compilation
 :warning: Since the system uses ETSIIT's Database, the computer needs to be connected to UGR's VPN for the proper functioning of the app otherwise the code should be changed to use another database.
   
