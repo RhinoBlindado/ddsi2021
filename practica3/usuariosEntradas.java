@@ -69,11 +69,12 @@ public class usuariosEntradas
     private static ArrayList<Integer> obtenerIDCompras(Connection conn, int anno) throws SQLException
     {
         Statement st = conn.createStatement();
-        ResultSet rs = st.executeQuery("SELECT * FROM COMPRA_REALIZA_INICIA WHERE ANNOEDICION="+anno);
+        ResultSet rs = st.executeQuery("SELECT * FROM COMPRA_REALIZA_INICIA WHERE ANNOEDICION="+ anno +
+                                       " AND IDCOMPRA NOT IN (SELECT IDCOMPRA FROM COMPRA_FINALIZADA)");
 
         ArrayList<Integer> vectorIDCompras = new ArrayList<>();
 
-        System.out.println("\n--COMPRAS INICIADAS--");
+        System.out.println("\n--COMPRAS INICIADAS SIN FINALIZAR--");
         while(rs.next())
         {
             System.out.println("  ID de Compra: " + rs.getString("IDCOMPRA") + "\tFecha de Inicio: " + rs.getString("FECHAINICIO") 
@@ -179,16 +180,27 @@ public class usuariosEntradas
         while(enBucle)
         {
             idCompras = obtenerIDCompras(conn, actAnno);
-            System.out.print(">>>Seleccionar ID Compra: ");
-            actIDCompra = scan.nextInt();
 
-            if(idCompras.contains(actIDCompra))
+            if(!idCompras.isEmpty())
             {
-                enBucle = false;
+                System.out.print(">>>Seleccionar ID Compra: ");
+                actIDCompra = scan.nextInt();
+
+                if(idCompras.contains(actIDCompra))
+                {
+                    enBucle = false;
+                }
+                else
+                {
+                    System.out.print(">>>ERROR: ID de Compra Incorrecta. Vuelva a intentar.\n");
+                }
             }
             else
             {
-                System.out.print(">>>ERROR: ID de Compra Incorrecta. Vuelva a intentar.\n");
+                System.out.print(">>>AVISO: No hay compras iniciadas.\n");
+                enBucle = false;
+                enCompra = false;
+                enFinCompra = false;
             }
         }
 
@@ -272,12 +284,12 @@ public class usuariosEntradas
         }
         
         //  Mostrar los cambios a realizarse, crear un savepoint dado que se va a realizar una transacción.
-        mostrarEntradasAnnadidas(vectorEntradas, vectorFin);
         conn.setAutoCommit(false);
         Savepoint entradasNoAnnadidas = conn.setSavepoint();
 
         while (enFinCompra)
         {
+            mostrarEntradasAnnadidas(vectorEntradas, vectorFin);
             System.out.print(">>>¿Desea finalizar la compra? [1 - Si, finalizar | 0 - No, cancelar]: ");
             finCompra = scan.nextInt();
         
@@ -303,7 +315,6 @@ public class usuariosEntradas
                 st.executeUpdate("INSERT INTO COMPRA_FINALIZADA VALUES ("+actIDCompra+", SYSDATE)");
                 // Fin transacción
                 conn.commit();
-                conn.setAutoCommit(true);
                 System.out.print(">>>COMPRA FINALIZADA\n\n");
                 enFinCompra = false;
             }
@@ -312,5 +323,6 @@ public class usuariosEntradas
                 System.out.println(">>>Selección Incorrecta. Vuelva a Intentar.");
             }
         }
+        conn.setAutoCommit(true);
     }
 }
