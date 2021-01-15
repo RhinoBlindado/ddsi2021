@@ -1,6 +1,6 @@
   
 
-padelTournamentSystem.class: padelTournamentSystem.java jugadoresEntrenadores.java usuariosEntradas.java patrocinadoresColaboradores.java pedidosMateriales.java
+padelTournamentSystem.class: padelTournamentSystem.java jugadoresEntrenadores.java usuariosEntradas.java patrocinadoresColaboradores.java pedidosMateriales.java personalHorarios.java
 	javac -cp .:./src/ojdbc10.jar padelTournamentSystem.java 
 	
 
