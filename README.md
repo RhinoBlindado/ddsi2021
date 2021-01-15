@@ -32,7 +32,7 @@ La Práctica 3 consistió, como se ha mencionado, en la codificación  del Siste
 ### :pushpin: Introduction
 The practical side of the course was divided in three practical assignments, all relating to the creation from scratch of an Information System, the first two assignments where for the initial steps while the third one was the implementation in code of parts of the system. The system is an app for managing all the aspects related to Padel tournaments, ranging from the players, the users that buy tickets and the workers and materials being used.
 
-The information system can be divided in five subsystems: **Players/Trainers**, **Users/Tickets**, **Sponsors/Collaborators**, **Staff/Schedules** y **Materials/Orders**
+The information system can be divided in five subsystems: **Players/Trainers**, **Users/Tickets**, **Sponsors/Collaborators**, **Staff/Schedules** and **Materials/Orders**
 
 Additionally, there was a practical seminar to test the connection between Java to ETSIIT's Oracle Database.
 ### :busts_in_silhouette: Team
