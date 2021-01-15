@@ -120,7 +120,7 @@ CREATE TABLE ANADE
     Cantidad NUMBER NOT NULL,
     FOREIGN KEY (anno, idEntrada) REFERENCES TIENE(anno, idEntrada),
     PRIMARY KEY(anno, idCompra, idEntrada),
-    CHECK (Cantidad > 0)
+    CHECK (Cantidad >= 0)
 );
 
 
@@ -172,7 +172,7 @@ CREATE TABLE MATERIAL_PROPORCIONADO(
     idEntidad NUMBER,
     anno NUMBER,
     cantidad NUMBER,
-    CHECK (cantidad > 0),
+    CHECK (cantidad >= 0),
 
     FOREIGN KEY(idEntidad, anno) REFERENCES PATROCINA(idEntidad, anno)
 );

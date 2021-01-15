@@ -52,7 +52,7 @@ public class pedidosMateriales {
 
         while (rs.next()) {
             System.out.println("\nid Material:" + rs.getString("IDMATERIAL") + " nombre: " + rs.getString("nombreMaterial")
-                    + " id Entidad: " + rs.getString("idEntidad") + " año: " + rs.getString("anno")
+                    + " id Patrocinadora: " + rs.getString("idEntidad") + " año: " + rs.getString("anno")
                     + " cantidad: " + rs.getString("cantidad")  );
 
         }
@@ -115,8 +115,8 @@ public class pedidosMateriales {
 
         while(!parar){
 
-            System.out.println( "- SUBSISTEMA 3 - PEDIDOS/MATERIALES -\n" + "Realizar pedido de materiales:\n" + "1 - Crear pedido\n" + 
-                                    "2 - Añadir material\n" +  "0 - Salir");
+            System.out.println( "- SUBSISTEMA 5 - PEDIDOS/MATERIALES -\n" + "Realizar pedido de materiales:\n" + "1 - Crear pedido\n" + 
+                                    "2 - Añadir material\n" +  "0 - Finalizar pedido");
             selection = datosDetalle.nextInt();
             System.out.println("\n");
 
