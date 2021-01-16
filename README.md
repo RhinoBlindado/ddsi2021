@@ -8,7 +8,7 @@ El apartado práctico de la asignatura se dividió en tres entregas, todas refer
 
 El sistema de información se divide en cinco subsistemas: **Jugadores/Entrenadores**, **Usuarios/Entradas**, **Patrocinadores/Colaboradores**, **Personal/Horarios** y **Materiales/Pedidos**
 
-Adicionalmente se realizó un seminario práctico para probar la conexión de Java a la conexión de la base de datos Oracle de la ETSIIT.
+Adicionalmente se realizó un seminario práctico para probar la conexión de Java la base de datos Oracle de la ETSIIT.
 
 ### :busts_in_silhouette: Equipo
 Las prácticas fueron realizadas en equipo junto a [Eladia Gómez Morales](https://github.com/elaypunto), [José Correa Maldonado](https://github.com/JoseMaldonadoC), [Amanda Moyano Romero](https://github.com/amxndam) y [Jesús Muela Cárdenas](https://github.com/KTJota).
